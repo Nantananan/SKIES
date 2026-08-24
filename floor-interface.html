@@ -3,151 +3,146 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Floor Interface Template</title>
+<title>The Little Prince - Journey</title>
+<!-- Load the Rive Web Engine -->
+<script src="https://unpkg.com/@rive-app/canvas@2.19.6"></script>
+
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<!-- Blinking Stars & Night Sky -->
+<div id="star-container">
+  <div class="stars stars-1"></div><div class="stars stars-2"></div><div class="stars stars-3"></div>
+  
+  <!-- Shooting Stars -->
+  <div class="shooting-star star-shoot-1"></div>
+  <div class="shooting-star star-shoot-2"></div>
+  <div class="shooting-star star-shoot-3"></div>
+</div>
 
-<div id="floor-tag">Floor <span id="floor-tag-num">1</span> / <span id="floor-tag-total">3</span></div>
+<!-- Blinking Night Sky Overlay -->
+<div id="sky-flash-overlay"></div>
 
-<button class="nav-btn" id="btn-up" aria-label="Previous floor">&#8593;</button>
-<button class="nav-btn" id="btn-down" aria-label="Next floor">&#8595;</button>
-
+<!-- Map Indicator (Left side) -->
 <div id="floor-indicator"></div>
+
+<!-- Custom Message Modal -->
+<div id="custom-modal" class="custom-modal">
+  <div class="custom-modal-box">
+    <p id="modal-text"></p>
+    <button onclick="hideMessage()">Close</button>
+  </div>
+</div>
 
 <div id="viewport">
   <div id="floor-strip">
 
-    <!-- FLOOR 1 — Night Sky -->
+    <!-- FLOOR 1 -->
     <section class="floor" data-floor="1">
-      <div class="floor-label">Floor 01 — Night Sky</div>
-      <div class="floor-placeholder-box frame-style-1" data-slot="floor-1-main" tabindex="0" role="button" aria-label="Floor 1 — interact">
+      <div class="floor-placeholder-box" data-slot="floor-1-main">
+        <div class="stage-layer" id="layer-floor-1">
+          
+          <div class="planet-home planet-interactive" id="home-planet" onclick="showMessage('B-612: The Little Prince\'s home asteroid. Watch out for the Baobabs!')">
+            <!-- 🖼️ Custom Baobab Drawing applied here! -->
+            <img src="Baobab.jpg" alt="B-612 Home Planet">
+          </div>
 
-        <div class="stage-layer layer-connector" aria-hidden="true">
-          <div class="floor-connector"></div>
-          <div class="floor-moon floor-moon-bottom"></div>
+          <!-- Rive Canvas Element -->
+          <div class="rive-container">
+            <canvas id="character-canvas" width="400" height="400"></canvas>
+            <span style="position: absolute; pointer-events: none;">Rive Animation<br>Goes Here</span>
+          </div>
+
+          <!-- Thematic Loop Panels -->
+          <div class="loop-panel" id="panel-for">
+            <h3>The Flock of Birds</h3>
+            <code>for (let i = 0; i < 15; i++) {<br>&nbsp;&nbsp;spawnBird();<br>}</code>
+            <button class="loop-btn" onclick="runForLoop()">Run Loop</button>
+            <span id="for-counter" style="margin-left: 10px; color: #888;">Birds: 0</span>
+          </div>
+
+          <div class="loop-panel" id="panel-while">
+            <h3>Weeding the Baobabs</h3>
+            <code>while (sprouts < 3) {<br>&nbsp;&nbsp;spawnSprout();<br>&nbsp;&nbsp;sprouts++;<br>}</code>
+            <button class="loop-btn" onclick="runWhileLoop()">Run Loop</button>
+            <span id="while-counter" style="margin-left: 10px; color: #888;">Sprouts: 0</span>
+          </div>
+
         </div>
-
-        <div class="stage-layer layer-stars" aria-hidden="true">
-          <div class="star star-a"></div>
-          <div class="star star-b"></div>
-          <div class="star star-c"></div>
-          <div class="star star-d"></div>
-          <div class="star star-e"></div>
-          <div class="star star-f"></div>
-          <div class="star star-g"></div>
-          <div class="star star-h"></div>
-        </div>
-
-        <div class="stage-layer layer-sky-clickables">
-          <button class="sky-clickable comet comet-pos"
-                  data-full-src="rtworks/comet.png" data-title="Comet"
-                  aria-label="Open Comet">
-            <span class="sky-label">Comet</span>
-          </button>
-          <button class="sky-clickable planet planet-gold planet-sm planet-pos-tr"
-                  data-full-src="rtworks/planet-tiny.png" data-title="Tiny Planet"
-                  aria-label="Open Tiny Planet">
-            <span class="sky-label">Tiny Planet</span>
-          </button>
-        </div>
-
       </div>
     </section>
 
-    <!-- FLOOR 2 — Floating Planets -->
+    <!-- FLOOR 2 -->
     <section class="floor" data-floor="2">
-      <div class="floor-label">Floor 02 — Floating Planets</div>
-      <div class="floor-placeholder-box frame-style-2" data-slot="floor-2-main" tabindex="0" role="button" aria-label="Floor 2 — interact">
-
-        <div class="stage-layer layer-connector" aria-hidden="true">
-          <div class="floor-connector"></div>
-          <div class="floor-moon floor-moon-top"></div>
-        </div>
-
-        <div class="stage-layer layer-stars" aria-hidden="true">
-          <div class="star star-a"></div>
-          <div class="star star-c"></div>
-          <div class="star star-f"></div>
-        </div>
-
-        <div class="stage-layer layer-sky-clickables">
-          <button class="sky-clickable planet planet-blue planet-lg planet-pos-mr"
-                  data-full-src="rtworks/planet1.png" data-title="Floating Planet"
-                  aria-label="Open Floating Planet">
-            <span class="sky-label">Floating Planet</span>
-          </button>
-          <button class="sky-clickable cloud cloud-pos-ml"
-                  data-full-src="rtworks/cloud.png" data-title="Cloud"
-                  aria-label="Open Cloud">
-            <span class="sky-label">Cloud</span>
-          </button>
-        </div>
-
-      </div>
-    </section>
-
-    <!-- FLOOR 3 — Fox & Snake -->
-    <section class="floor" data-floor="3">
-      <div class="floor-label">Floor 03 — The Grove</div>
-      <div class="floor-placeholder-box frame-style-3" data-slot="floor-3-main" tabindex="0" role="button" aria-label="Floor 3 — interact">
-
-        <div class="stage-layer layer-connector" aria-hidden="true">
-          <div class="floor-connector"></div>
-        </div>
-
-        <div class="stage-layer layer-grove">
-          <div class="grove-tree" aria-hidden="true"></div>
-
-          <button class="sky-clickable fox-trigger" id="fox-trigger"
-                  data-full-src="rtworks/fox.png" data-title="Fox"
-                  aria-label="Fox — stay here">
-            <span class="sky-label">Fox — stay here</span>
-          </button>
-
-          <button class="sky-clickable snake-trigger" id="snake-trigger"
-                  aria-label="Snake — go back">
-            <span class="sky-label">Snake — go back</span>
-          </button>
-        </div>
-
-        <div class="stage-layer layer-legend" aria-hidden="true">
-          <div class="location-choices">
-            <div class="location-choices-title">Location choices</div>
-            <div>Fox = stay at the current floor</div>
-            <div>Snake = go back to floor 1</div>
+      <div class="floor-placeholder-box" data-slot="floor-2-main">
+        <div class="stage-layer">
+          <div class="planet-huge-left planet-huge-left-top planet-interactive" onclick="showMessage('You have discovered a giant neighboring planet.')">
+            <img src="https://placehold.co/800x800/transparent/c5a880?text=Giant+Planet+1" alt="Giant Planet 1">
+          </div>
+          
+          <div class="planet-small-1 planet-interactive" onclick="showMessage('The King\'s Asteroid')">
+            <img src="https://placehold.co/150x150/transparent/c5a880?text=King" alt="King Asteroid">
+          </div>
+          <div class="planet-small-2 planet-interactive" onclick="showMessage('The Vain Man\'s Asteroid')">
+            <img src="https://placehold.co/150x150/transparent/c5a880?text=Vain" alt="Vain Man Asteroid">
           </div>
         </div>
-
       </div>
     </section>
 
-    <!-- HIDDEN ROOM — not part of the normal floor count/indicator/nav
-         bounds. Only reachable via the Snake trigger. -->
-    <section class="floor floor-secret" data-floor="secret" id="floor-secret">
-      <div class="floor-label">??? — Hidden Room</div>
-      <div class="floor-placeholder-box" data-slot="floor-secret-main" tabindex="0" role="button" aria-label="Hidden room — interact">
-        You found the hidden room.
+    <!-- FLOOR 3 -->
+    <section class="floor" data-floor="3">
+      <div class="floor-placeholder-box" data-slot="floor-3-main">
+        <div class="stage-layer">
+          <div class="planet-huge-left planet-huge-left-bottom planet-interactive" onclick="showMessage('The dark side of the giant planet.')">
+            <img src="https://placehold.co/800x800/transparent/c5a880?text=Giant+Planet+1" alt="Giant Planet 1 Bottom">
+          </div>
+          <div class="planet-huge-right planet-huge-right-top planet-interactive" onclick="showMessage('Another mysterious ringed world.')">
+            <img src="https://placehold.co/800x800/transparent/c5a880?text=Giant+Planet+2" alt="Giant Planet 2">
+          </div>
+          
+          <div class="planet-small-3 planet-interactive" onclick="showMessage('The Lamplighter\'s Asteroid')">
+            <img src="https://placehold.co/150x150/transparent/c5a880?text=Lamplighter" alt="Lamplighter Asteroid">
+          </div>
+          <div class="planet-small-4 planet-interactive" onclick="showMessage('The Geographer\'s Asteroid')">
+            <img src="https://placehold.co/150x150/transparent/c5a880?text=Geographer" alt="Geographer Asteroid">
+          </div>
+        </div>
       </div>
     </section>
 
-  </div>
-</div>
+    <!-- FLOOR 4 -->
+    <section class="floor" data-floor="4">
+      <div class="floor-placeholder-box" data-slot="floor-4-main">
+        <div class="stage-layer" id="layer-floor-4">
+          <div class="planet-huge-right planet-huge-right-bottom planet-interactive" onclick="showMessage('You are approaching Earth.')">
+            <img src="https://placehold.co/800x800/transparent/c5a880?text=Giant+Planet+2" alt="Giant Planet 2 Bottom">
+          </div>
+          
+          <div class="ground-hollow" id="ground-hollow">
+            <img src="https://placehold.co/2000x1000/transparent/c5a880?text=Earth+Ground" alt="Earth Ground">
+          </div>
 
-<!-- Reusable image modal — opened by any .sky-clickable with a data-full-src. -->
-<div id="egg-modal" class="egg-modal" hidden>
-  <div class="egg-modal-backdrop" id="egg-modal-backdrop"></div>
-  <div class="egg-modal-box">
-    <button class="egg-modal-close" id="egg-modal-close" aria-label="Close">&times;</button>
-    <img id="egg-modal-img" src="" alt="">
-    <div id="egg-modal-title" class="egg-modal-title"></div>
+          <div class="loop-panel" id="panel-do-while">
+            <h3>The Field of Roses</h3>
+            <code>do {<br>&nbsp;&nbsp;spawnRose();<br>} while (roses < 50);</code>
+            <button class="loop-btn" onclick="runDoWhileLoop()">Run Loop</button>
+            <span id="do-while-counter" style="margin-left: 10px; color: #888;">Roses: 0</span>
+          </div>
+
+          <!-- Boolean Choices -->
+          <div class="choices-container">
+            <button class="choice-btn" onclick="chooseFox()">Fox: Stay</button>
+            <button class="choice-btn" onclick="chooseSnake()">Snake: Go Back</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
   </div>
 </div>
 
 <script src="script.js"></script>
-
 </body>
 </html>
