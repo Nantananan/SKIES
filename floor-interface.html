@@ -45,26 +45,37 @@
           
           <div class="planet-home planet-interactive" id="home-planet" onclick="showMessage('B-612: The Little Prince\'s home asteroid. Watch out for the Baobabs!')">
             <!-- 🖼️ Custom Baobab Drawing applied here! -->
-            <img src="Baobab.jpg" alt="B-612 Home Planet">
+            <img src="rtworks/Baobab.jpg" alt="B-612 Home Planet">
           </div>
 
-          <!-- Rive Canvas Element -->
+          <!-- Rive Canvas Element 
           <div class="rive-container">
             <canvas id="character-canvas" width="400" height="400"></canvas>
             <span style="position: absolute; pointer-events: none;">Rive Animation<br>Goes Here</span>
           </div>
 
-          <!-- Thematic Loop Panels -->
+          <!- Thematic Loop Panels -->
           <div class="loop-panel" id="panel-for">
             <h3>The Flock of Birds</h3>
-            <code>for (let i = 0; i < 15; i++) {<br>&nbsp;&nbsp;spawnBird();<br>}</code>
+            <code>
+              
+              for (let i = 0; i < 15; i++) 
+              {
+                <br>&nbsp;&nbsp;spawnBird();<br>
+              }
+              </code>
             <button class="loop-btn" onclick="runForLoop()">Run Loop</button>
             <span id="for-counter" style="margin-left: 10px; color: #888;">Birds: 0</span>
           </div>
 
           <div class="loop-panel" id="panel-while">
             <h3>Weeding the Baobabs</h3>
-            <code>while (sprouts < 3) {<br>&nbsp;&nbsp;spawnSprout();<br>&nbsp;&nbsp;sprouts++;<br>}</code>
+            <code>
+              while (sprouts < 3) 
+              {
+                <br>&nbsp;&nbsp;spawnSprout();<br>&nbsp;&nbsp;sprouts++;<br>
+              }
+            </code>
             <button class="loop-btn" onclick="runWhileLoop()">Run Loop</button>
             <span id="while-counter" style="margin-left: 10px; color: #888;">Sprouts: 0</span>
           </div>
