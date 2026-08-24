@@ -1,0 +1,681 @@
+:root {
+    --bg: #ffffff;
+    --panel: #f2f2f2;
+    --border: #cccccc;
+    --text: #222222;
+    --accent: #888888;
+    --transition-duration: 800ms;
+    --transition-ease: cubic-bezier(0.65, 0, 0.35, 1);
+    /* Fixed design resolution for each floor's "stage" — everything
+       inside it uses static px positions/sizes, like a game canvas.
+       The whole stage is scaled up/down by JS to fit any screen
+       (see script.js), the same way a fixed-resolution game scales
+       to fit the window instead of reflowing its UI. */
+    --stage-width: 1600px;
+    --stage-height: 900px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    height: 100%;
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Helvetica Neue','Fredoka', sans-serif;
+    overflow: hidden;
+  }
+
+  /* ---------- Viewport (window that clips the strip) ----------
+     100dvh (dynamic viewport height) accounts for mobile browser UI
+     (address bar showing/hiding); falls back to 100vh automatically
+     on browsers that don't support dvh. */
+  #viewport {
+    height: 100vh;
+    height: 100dvh;
+    width: 100vw;
+    overflow: hidden;
+    position: relative;
+  }
+
+  /* ---------- The strip: all floors stacked, moves as ONE piece ---------- */
+  #floor-strip {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    transition: transform var(--transition-duration) var(--transition-ease);
+    will-change: transform;
+  }
+
+  .floor {
+    height: 100vh;
+    height: 100dvh;
+    width: 100vw;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;      /* centers the fixed-size stage before scaling */
+    justify-content: center;
+    position: relative;
+    overflow: hidden;         /* clips the stage's letterbox edges */
+    background: var(--bg);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+  }
+
+  /* ---------- Per-floor background images ----------
+     Removed — floors render on a plain background (see --bg / .floor
+     background below) instead of an image. */
+
+  /* ---------- Placeholder component slots ----------
+     The ENTIRE floor is now the placeholder/interactive surface — no
+     small centered box. It fills the whole floor (minus the top/bottom
+     slabs) and is clickable/focusable (see the floor click handler in
+     script.js — swap that handler for real per-floor behavior). */
+  .floor-label {
+    position: absolute;
+    top: 56px; /* fixed stage coordinate — sits below the fixed #floor-tag */
+    left: 16px;
+    font-size: 0.85rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent);
+    z-index: 2;
+    pointer-events: none;
+  }
+
+  .floor-placeholder-box {
+  width: var(--stage-width);
+  height: var(--stage-height);
+  flex-shrink: 0;
+  
+  /* 1. Remove the dashed border and default wllies.png background */
+  /* border: 2px dashed var(--border); */
+  
+  /* 2. Set default background behavior for the canvas */
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative; /* positioning context for the stacked layers below */
+  
+  /* ... keep all the other original properties (gap, padding, position, etc.) ... */
+}
+
+  /* ================================================================
+     LAYERS — the stage is built from 4 stacked layers, matching the
+     sketch: Layer 1 (floor bg, static) sits implicitly as the box's
+     own background-image above; Layer 2 (framed images) is
+     interactable; Layer 3 (dim light) is a static mood/lighting
+     overlay; Layer 4 (components — plants, easter egg, hidden-room
+     trigger) is interactable and sits on top of everything.
+     Static layers let clicks pass through (pointer-events: none on
+     the layer itself); interactable layers re-enable pointer-events
+     on their direct children only, so empty space still passes
+     clicks down to the floor's own click handler underneath. ================================================================ */
+  .stage-layer {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  /* Layer 2 — framed images (interactable) */
+  .layer-frames {
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    pointer-events: none;
+  }
+
+  .layer-frames > * {
+    pointer-events: auto;
+  }
+
+  /* Layer 3 — dim light (static mood/lighting overlay). Default is a
+     soft vignette; swap for a real light-rays/gradient image per floor
+     via .frame-style-N .layer-light { background-image: url(...); }. */
+  .layer-light {
+    z-index: 3;
+    pointer-events: none;
+    background: radial-gradient(
+      ellipse at 50% 38%,
+      rgba(255, 255, 255, 0) 0%,
+      rgba(0, 0, 0, 0.18) 75%,
+      rgba(0, 0, 0, 0.32) 100%
+    );
+  }
+
+  /* Layer 4 — components: plants, easter egg trigger, any other
+     interactive extras. Sits above the light layer so it's never
+     dimmed/obscured. */
+  .layer-components {
+    z-index: 4;
+    pointer-events: none;
+  }
+
+  .layer-components > * {
+    pointer-events: auto;
+  }
+
+  /* ---------- Floor connector (replaces the removed slab partitions) ----------
+     A decorative element that deliberately bleeds past the floor's own
+     top/bottom edges. Because .floor has overflow:hidden (used for the
+     stage letterbox clipping), the connector gets cut off exactly at
+     the seam between floors — visually implying it continues into the
+     neighboring floor, instead of a hard partition bar sitting there.
+     The floor transition (sliding between floors) is unaffected —
+     this is purely decorative and non-interactive. */
+  .layer-connector {
+    z-index: 0; /* sits behind the frame/light/components layers */
+    pointer-events: none;
+  }
+
+  .floor-connector {
+    position: absolute;
+    left: 50%;
+    top: -60px;    /* bleeds above this floor's top edge */
+    bottom: -60px; /* bleeds below this floor's bottom edge */
+    width: 14px;
+    transform: translateX(-50%);
+    --connector-color: var(--border);
+    background: linear-gradient(
+      to bottom,
+      transparent 0%,
+      var(--connector-color) 12%,
+      var(--connector-color) 88%,
+      transparent 100%
+    );
+  }
+
+  /* Each floor's connector reads with a different tint, matching that
+     floor's existing accent color — swap for real art (a vine, pipe,
+     staircase edge, etc.) whenever you have one. */
+  .frame-style-1 .floor-connector { --connector-color: #b08968; }
+  .frame-style-2 .floor-connector { --connector-color: #6c8ea3; }
+  .frame-style-3 .floor-connector { --connector-color: #333333; }
+
+  /* ---------- Moon spanning floor 1 → floor 2 ----------
+     Two halves, one per floor, positioned so they sit on the exact same
+     seam line: floor 1's half hangs off its bottom edge, floor 2's half
+     hangs off its top edge. Both use the same size/left position, so
+     when floor 1 and floor 2 are adjacent in the strip they line up
+     into what reads as one continuous moon crossing the gap. */
+  .floor-moon {
+    position: absolute;
+    left: 50%;
+    width: 320px;
+    height: 320px;
+    border-radius: 50%;
+    transform: translateX(-50%);
+    background: radial-gradient(
+      circle at 35% 30%,
+      #ffffff 0%,
+      #e6e6e6 40%,
+      #bdbdbd 75%,
+      #9a9a9a 100%
+    );
+    box-shadow: 0 0 90px rgba(255, 255, 255, 0.4);
+  }
+
+  .floor-moon-bottom {
+    top: calc(100% - 160px); /* center sits exactly on this floor's bottom edge */
+  }
+
+  .floor-moon-top {
+    top: -160px; /* center sits exactly on this floor's top edge */
+  }
+
+  /* Background stays static regardless of hover/focus/click — no
+     background-swap "zoom" jump like Exhibit of Sorrows' fixed scene
+     art. (Previously this reset to transparent on hover, which briefly
+     revealed the .floor's own background underneath — a differently
+     cropped/scaled image — reading as an unwanted zoom.) */
+  .floor-placeholder-box:hover,
+  .floor-placeholder-box:focus-visible {
+    outline: none;
+  }
+
+  /* ---------- Scattered stars ----------
+     Small decorative dots on the night-sky floors. */
+  .layer-stars {
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  .star {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: #ffffff;
+    box-shadow: 0 0 6px rgba(255, 255, 255, 0.9);
+  }
+
+  .star-a { top: 12%; left: 18%; }
+  .star-b { top: 20%; left: 42%; width: 3px; height: 3px; }
+  .star-c { top: 8%;  left: 68%; }
+  .star-d { top: 30%; left: 82%; width: 3px; height: 3px; }
+  .star-e { top: 46%; left: 12%; width: 3px; height: 3px; }
+  .star-f { top: 60%; left: 55%; }
+  .star-g { top: 68%; left: 28%; width: 3px; height: 3px; }
+  .star-h { top: 15%; left: 90%; width: 3px; height: 3px; }
+
+  /* ---------- Sky clickables (shared) ----------
+     Base for every interactive sky element (comet, planet, cloud, fox).
+     Each is a plain button; script.js queries .sky-clickable and opens
+     the shared modal for anything with a data-full-src. */
+  .layer-sky-clickables {
+    z-index: 2;
+    pointer-events: none;
+  }
+
+  .layer-sky-clickables > * {
+    pointer-events: auto;
+  }
+
+  .sky-clickable {
+    position: absolute;
+    border: none;
+    padding: 0;
+    background: none;
+    cursor: pointer;
+  }
+
+  .sky-label {
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    margin-top: 10px;
+    white-space: nowrap;
+    font-size: 0.75rem;
+    letter-spacing: 0.04em;
+    color: #f5f5f5;
+    background: rgba(0, 0, 0, 0.55);
+    padding: 4px 10px;
+    border-radius: 4px;
+    opacity: 0;
+    transition: opacity 150ms ease;
+    pointer-events: none;
+  }
+
+  .sky-clickable:hover .sky-label,
+  .sky-clickable:focus-visible .sky-label {
+    opacity: 1;
+  }
+
+  .sky-clickable:hover,
+  .sky-clickable:focus-visible {
+    outline: none;
+    filter: brightness(1.15);
+  }
+
+  /* ---------- Comet ---------- */
+  .comet {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 30%, #fff7d6 0%, #ffd76a 45%, #e8971f 100%);
+    box-shadow: 0 0 30px rgba(255, 200, 90, 0.6);
+  }
+
+  .comet::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    right: 100%;
+    width: 120px;
+    height: 10px;
+    transform: translateY(-50%);
+    background: linear-gradient(to left, rgba(255, 215, 106, 0.7), transparent);
+    pointer-events: none;
+  }
+
+  .comet-pos { top: 110px; left: 160px; }
+
+  /* ---------- Floating planets ---------- */
+  .planet {
+    border-radius: 50%;
+    width: 120px;
+    height: 120px;
+    background: radial-gradient(
+      circle at 32% 28%,
+      rgba(255, 255, 255, 0.55) 0%,
+      transparent 45%
+    ), var(--planet-color, #8a8a8a);
+    box-shadow:
+      inset -14px -14px 28px rgba(0, 0, 0, 0.35),
+      inset 8px 8px 18px rgba(255, 255, 255, 0.15),
+      0 0 24px rgba(255, 255, 255, 0.12);
+  }
+
+  .planet-blue { --planet-color: #4d7ea8; }
+  .planet-gold { --planet-color: #c99a3e; }
+  .planet-lg   { width: 300px; height: 300px; }
+  .planet-sm   { width: 70px;  height: 70px; }
+
+  .planet-pos-mr { top: 38%; right: 130px; }
+  .planet-pos-tr { top: 90px; right: 90px; }
+
+  /* ---------- Cloud ---------- */
+  .cloud {
+    width: 140px;
+    height: 60px;
+    background: #e9e9e9;
+    border-radius: 40px;
+  }
+
+  .cloud::before,
+  .cloud::after {
+    content: '';
+    position: absolute;
+    background: #e9e9e9;
+    border-radius: 50%;
+  }
+
+  .cloud::before {
+    width: 70px;
+    height: 70px;
+    top: -30px;
+    left: 15px;
+  }
+
+  .cloud::after {
+    width: 55px;
+    height: 55px;
+    top: -22px;
+    right: 15px;
+  }
+
+  .cloud-pos-ml { top: 42%; left: 110px; }
+
+  /* ---------- Grove: tree, fox, snake ---------- */
+  .layer-grove {
+    z-index: 2;
+  }
+
+  .grove-tree {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 8px;
+    height: 220px;
+    background: #5b4636;
+    pointer-events: none;
+  }
+
+  .grove-tree::before {
+    content: '';
+    position: absolute;
+    bottom: 180px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 260px;
+    height: 200px;
+    background: #4f7a52;
+    border-radius: 50%;
+  }
+
+  .fox-trigger {
+    bottom: 40px;
+    left: calc(50% + 70px);
+    width: 60px;
+    height: 44px;
+    background: #c9622a;
+    border-radius: 50% 50% 45% 45%;
+  }
+
+  .fox-trigger::after {
+    content: '';
+    position: absolute;
+    top: -14px;
+    left: 6px;
+    width: 0;
+    height: 0;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-bottom: 16px solid #c9622a;
+  }
+
+  .snake-trigger {
+    bottom: 20px;
+    left: calc(50% - 150px);
+    width: 90px;
+    height: 20px;
+    background: #5a8f6b;
+    border-radius: 20px;
+  }
+
+  /* ---------- Legend ---------- */
+  .layer-legend {
+    z-index: 2;
+    pointer-events: none;
+  }
+
+  .location-choices {
+    position: absolute;
+    bottom: 40px;
+    right: 60px;
+    color: #f0f0f0;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.85rem;
+    line-height: 1.6;
+    background: rgba(0, 0, 0, 0.4);
+    padding: 14px 18px;
+    border-radius: 6px;
+    max-width: 320px;
+  }
+
+  .location-choices-title {
+    font-weight: 700;
+    margin-bottom: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  /* ---------- Floor indicator (side dots) ---------- */
+  #floor-indicator {
+    position: fixed;
+    right: 24px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    z-index: 10;
+  }
+
+  .indicator-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    border: 1px solid var(--accent);
+    background: transparent;
+    cursor: pointer;
+    transition: background 300ms ease;
+  }
+
+  .indicator-dot.active {
+    background: var(--accent);
+  }
+
+  /* ---------- Nav buttons ---------- */
+  .nav-btn {
+    position: fixed;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 44px;
+    height: 44px;
+    border: 1px solid var(--accent);
+    background: var(--bg);
+    color: var(--text);
+    font-size: 1.2rem;
+    cursor: pointer;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    transition: opacity 300ms ease;
+  }
+
+  .nav-btn:hover { background: var(--panel); }
+  .nav-btn:disabled { opacity: 0.3; cursor: default; }
+
+  #btn-up { top: 24px; }
+  #btn-down { bottom: 24px; }
+
+  /* ---------- Floor number tag ---------- */
+  #floor-tag {
+    position: fixed;
+    left: 24px;
+    top: 24px;
+    font-size: 0.85rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    z-index: 10;
+  }
+
+  /* ---------- Easter egg trigger (now the snake) ----------
+     The snake element in the grove is the trigger — clicking it slides
+     the strip to the hidden room (see script.js). A faint hover glow is
+     the only hint it's clickable. */
+  #snake-trigger {
+    pointer-events: auto;
+    transition: filter 200ms ease;
+  }
+
+  #snake-trigger:hover,
+  #snake-trigger:focus-visible {
+    filter: brightness(1.15) drop-shadow(0 0 6px rgba(111, 160, 106, 0.6));
+    outline: none;
+  }
+
+  /* ---------- Hidden room ----------
+     Visually distinguished so it's obvious in the code which floor is
+     the secret one. Not counted in the floor indicator/nav bounds — see
+     script.js, which filters it out of the normal floor list. */
+  .floor-secret {
+    background: var(--panel);
+  }
+
+  .floor-secret .floor-placeholder-box {
+    border-color: #444;
+  }
+
+  /* ---------- Reusable image modal ----------
+     Matches the reference video: rounded white card, dark dimmed
+     backdrop, grows/fades in on open (scale 0.85 -> 1, opacity 0 -> 1)
+     and shrinks/fades back out on close. Uses a class toggle instead of
+     [hidden] so the transition can actually play — see script.js. */
+  .egg-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity 250ms ease, visibility 0s linear 250ms;
+  }
+
+  .egg-modal.is-open {
+    visibility: visible;
+    opacity: 1;
+    transition: opacity 250ms ease;
+  }
+
+  .egg-modal[hidden] {
+    display: flex; /* overridden below once JS controls visibility via .is-open */
+  }
+
+  .egg-modal-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(10, 10, 10, 0.88);
+  }
+
+  .egg-modal-box {
+    position: relative;
+    z-index: 1;
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+    padding: 0;
+    width: min(96vw, 1100px);
+    max-height: 94dvh;
+    max-height: 94vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    transform: scale(0.85);
+    transition: transform 250ms cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .egg-modal.is-open .egg-modal-box {
+    transform: scale(1);
+  }
+
+  .egg-modal-box img {
+    width: 100%;
+    max-height: 88dvh;
+    max-height: 88vh;
+    display: block;
+    border-radius: 0;
+    object-fit: contain;
+    background: transparent;
+    transition: opacity 150ms ease;
+    image-rendering: pixelated; /* remove this if using a non-pixel-art image */
+  }
+
+  .egg-modal-title {
+    margin: 0;
+    padding: 16px 16px 0;
+    background: transparent;
+    font-family: 'Arial',sans-serif;
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: #f5f5f5;
+    text-align: center;
+    letter-spacing: 0.01em;
+    transition: opacity 150ms ease;
+  }
+
+  .egg-modal-title:empty {
+    display: none;
+  }
+
+  .egg-modal-close {
+    position: fixed;
+    top: 18px;
+    right: 24px;
+    width: 36px;
+    height: 36px;
+    min-width: 36px; /* keeps it a comfortable touch target on mobile */
+    min-height: 36px;
+    border-radius: 50%;
+    border: none;
+    background: transparent;
+    color: var(--text);
+    font-size: 1.5rem;
+    font-weight: 300;
+    line-height: 1;
+    cursor: pointer;
+    z-index: 101; /* sits above the modal box */
+  }
+
+  .egg-modal-close:hover {
+    opacity: 0.6;
+  }
