@@ -3,154 +3,128 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>The Little Prince - Journey</title>
-<!-- Load the Rive Web Engine -->
-<script src="https://unpkg.com/@rive-app/canvas@2.19.6"></script>
+<title>The Little Prince</title>
 
 <link rel="stylesheet" href="styles.css">
 </head>
-<body>
+<body data-active-floor="0">
 
-<!-- Blinking Stars & Night Sky -->
-<div id="star-container">
-  <div class="stars stars-1"></div><div class="stars stars-2"></div><div class="stars stars-3"></div>
-  
-  <!-- Shooting Stars -->
-  <div class="shooting-star star-shoot-1"></div>
-  <div class="shooting-star star-shoot-2"></div>
-  <div class="shooting-star star-shoot-3"></div>
-</div>
+<div id="hint">[ Press 'E' for Meteor Shower ]</div>
 
-<!-- Blinking Night Sky Overlay -->
-<div id="sky-flash-overlay"></div>
+<!-- Background Layers -->
+<div id="star-container"></div>
+<div class="twinkle-layer twinkle-1"></div>
+<div class="twinkle-layer twinkle-2"></div>
 
-<!-- Map Indicator (Left side) -->
-<div id="floor-indicator"></div>
+<!-- Initial Shooting stars -->
+<div class="shooting-star s1"></div>
+<div class="shooting-star s2"></div>
+<div class="shooting-star s3"></div>
 
 <!-- Custom Message Modal -->
-<div id="custom-modal" class="custom-modal">
-  <div class="custom-modal-box">
-    <p id="modal-text"></p>
-    <button onclick="hideMessage()">Close</button>
+<div id="custom-modal">
+  <div class="modal-box">
+    <p id="modal-text">Message goes here.</p>
+    <button class="loop-btn" onclick="closeModal()">Close</button>
   </div>
 </div>
 
 <div id="viewport">
+  
+  <!-- THE TRAVELING PRINCE (Moves independently across screen) -->
+  <div id="traveling-prince">
+    <img src="" alt="Traveling Prince" id="prince-img">
+  </div>
+
   <div id="floor-strip">
-
-    <!-- FLOOR 1 -->
+    <!-- FLOOR 1: HOME PLANET -->
     <section class="floor" data-floor="1">
-      <div class="floor-placeholder-box" data-slot="floor-1-main">
-        <div class="stage-layer" id="layer-floor-1">
-          
-          <div class="planet-home planet-interactive" id="home-planet" onclick="showMessage('B-612: The Little Prince\'s home asteroid. Watch out for the Baobabs!')">
-            <!-- 🖼️ Custom Baobab Drawing applied here! -->
-            <img src="rtworks/Baobab.jpg" alt="B-612 Home Planet">
+      <div class="floor-placeholder-box">
+        
+        <div class="planet-container planet-home" id="home-planet" onclick="showModal('Asteroid B-612. It is barely larger than a house.')">
+          <div class="img-placeholder">B-612 Art</div>
+          <!-- THE SITTING PRINCE (Attached to the planet) -->
+          <div class="sitting-prince" onclick="togglePrincePosture(event)" title="Click to stand up!">
+             <img src="" id="sitting-img" alt="Sitting Prince">
           </div>
+        </div>
+        <div class="planet-container planet-small-2" onclick="showModal('Neighbors planet, hes too lazy that\'s why the baobab has taken over.')">
+           <img src="assts/Baobab.jpg" alt="neighbor">
+        </div>
 
-          <!-- Rive Canvas Element 
-          <div class="rive-container">
-            <canvas id="character-canvas" width="400" height="400"></canvas>
-            <span style="position: absolute; pointer-events: none;">Rive Animation<br>Goes Here</span>
-          </div>
-
-          <!- Thematic Loop Panels -->
-          <div class="loop-panel" id="panel-for">
-            <h3>The Flock of Birds</h3>
-            <code>
-              
-              for (let i = 0; i < 15; i++) 
-              {
-                <br>&nbsp;&nbsp;spawnBird();<br>
-              }
-              </code>
-            <button class="loop-btn" onclick="runForLoop()">Run Loop</button>
-            <span id="for-counter" style="margin-left: 10px; color: #888;">Birds: 0</span>
-          </div>
-
-          <div class="loop-panel" id="panel-while">
-            <h3>Weeding the Baobabs</h3>
-            <code>
-              while (sprouts < 3) 
-              {
-                <br>&nbsp;&nbsp;spawnSprout();<br>&nbsp;&nbsp;sprouts++;<br>
-              }
-            </code>
-            <button class="loop-btn" onclick="runWhileLoop()">Run Loop</button>
-            <span id="while-counter" style="margin-left: 10px; color: #888;">Sprouts: 0</span>
-          </div>
-
+        <!-- SECRET EASTER EGG PLANET -->
+        <div class="planet-container easter-egg-planet" onclick="triggerMeteorShower(); showModal('Kalbo Kalbo Kalbo!!');">
+          <img src="assts/wali.png" alt="jkplanet">
+        </div>
+        
+        <div class="loop-panel" style="top: 200px; right: 200px;">
+          <h3>FOR Loop Exhibition</h3>
+          <pre><code>for (let i = 0; i < 15; i++) {
+  spawnBird();
+}</code></pre>
+          <button class="loop-btn" onclick="runForLoop()">Run Loop</button>
+          <div class="loop-status" id="for-status">Birds spawned: 0</div>
         </div>
       </div>
     </section>
 
-    <!-- FLOOR 2 -->
+    <!-- FLOOR 2: FIRST GIANT PLANET -->
     <section class="floor" data-floor="2">
-      <div class="floor-placeholder-box" data-slot="floor-2-main">
-        <div class="stage-layer">
-          <div class="planet-huge-left planet-huge-left-top planet-interactive" onclick="showMessage('You have discovered a giant neighboring planet.')">
-            <img src="https://placehold.co/800x800/transparent/c5a880?text=Giant+Planet+1" alt="Giant Planet 1">
-          </div>
-          
-          <div class="planet-small-1 planet-interactive" onclick="showMessage('The King\'s Asteroid')">
-            <img src="https://placehold.co/150x150/transparent/c5a880?text=King" alt="King Asteroid">
-          </div>
-          <div class="planet-small-2 planet-interactive" onclick="showMessage('The Vain Man\'s Asteroid')">
-            <img src="https://placehold.co/150x150/transparent/c5a880?text=Vain" alt="Vain Man Asteroid">
-          </div>
+      <div class="floor-placeholder-box">
+        <div class="planet-container planet-huge-left" onclick="showModal('What a lonely man. He sits on a grand throne with no one to rule but a sleepy old rat. He thinks he commands the sun to set, but he only waits for the sun to do what it always does.')">
+          <img src="assts/king.png" alt="king">
+        </div>
+        <div class="planet-container planet-small-4" onclick="showModal('This is so terribly sad. He drinks to forget that he is ashamed, and he is ashamed because he drinks.')">
+           <img src="assts/tippler.png" alt="tippler">
+        </div>
+        <div class="planet-container planet-small-1" onclick="showModal('Why does he want me to clap for him? He is the only person on this tiny planet, so of course he is the handsomest, richest, and smartest person here.')">
+          <img src="assts/conceitedman.png" alt=" conciet">
         </div>
       </div>
     </section>
 
-    <!-- FLOOR 3 -->
+    <!-- FLOOR 3: SECOND GIANT PLANET -->
     <section class="floor" data-floor="3">
-      <div class="floor-placeholder-box" data-slot="floor-3-main">
-        <div class="stage-layer">
-          <div class="planet-huge-left planet-huge-left-bottom planet-interactive" onclick="showMessage('The dark side of the giant planet.')">
-            <img src="https://placehold.co/800x800/transparent/c5a880?text=Giant+Planet+1" alt="Giant Planet 1 Bottom">
-          </div>
-          <div class="planet-huge-right planet-huge-right-top planet-interactive" onclick="showMessage('Another mysterious ringed world.')">
-            <img src="https://placehold.co/800x800/transparent/c5a880?text=Giant+Planet+2" alt="Giant Planet 2">
-          </div>
-          
-          <div class="planet-small-3 planet-interactive" onclick="showMessage('The Lamplighter\'s Asteroid')">
-            <img src="https://placehold.co/150x150/transparent/c5a880?text=Lamplighter" alt="Lamplighter Asteroid">
-          </div>
-          <div class="planet-small-4 planet-interactive" onclick="showMessage('The Geographer\'s Asteroid')">
-            <img src="https://placehold.co/150x150/transparent/c5a880?text=Geographer" alt="Geographer Asteroid">
-          </div>
-        </div>
-      </div>
-    </section>
+  <div class="floor-placeholder-box">
+    <div class="planet-container planet-small-3 businessman-planet"
+      onclick="showModal('He counts millions of stars but never looks at their beauty. He thinks owning them makes him rich, but he cannot put a star in his pocket or use it to stay warm.')">
+      <div class="img-placeholder">Small 3</div>
+    </div>
+    <div class="planet-container planet-huge-right geographer-planet"
+      onclick="showModal('He sits at a massive desk and writes about mountains and oceans, but he has never walked outside to see them.')">
+      <div class="img-placeholder">Huge Planet 2</div>
+    </div>
+    <div class="planet-container planet-small-5 lamplighter-planet"
+      onclick="showModal('His planet turns so fast that he never gets to rest, yet he keeps doing his job. He is the only one who does not seem ridiculous to me.')">
+      <div class="img-placeholder">Small 5</div>
+    </div>
+  </div>
+</section>
 
-    <!-- FLOOR 4 -->
+    <!-- FLOOR 4: THE EARTH -->
     <section class="floor" data-floor="4">
-      <div class="floor-placeholder-box" data-slot="floor-4-main">
-        <div class="stage-layer" id="layer-floor-4">
-          <div class="planet-huge-right planet-huge-right-bottom planet-interactive" onclick="showMessage('You are approaching Earth.')">
-            <img src="https://placehold.co/800x800/transparent/c5a880?text=Giant+Planet+2" alt="Giant Planet 2 Bottom">
-          </div>
-          
-          <div class="ground-hollow" id="ground-hollow">
-            <img src="https://placehold.co/2000x1000/transparent/c5a880?text=Earth+Ground" alt="Earth Ground">
-          </div>
+      <div class="floor-placeholder-box">
+        <div class="ground-hollow" id="ground-hollow">
+          <div class="img-placeholder">Earth Hollow Art</div>
+        </div>
 
-          <div class="loop-panel" id="panel-do-while">
-            <h3>The Field of Roses</h3>
-            <code>do {<br>&nbsp;&nbsp;spawnRose();<br>} while (roses < 50);</code>
-            <button class="loop-btn" onclick="runDoWhileLoop()">Run Loop</button>
-            <span id="do-while-counter" style="margin-left: 10px; color: #888;">Roses: 0</span>
-          </div>
+        <div class="loop-panel" style="bottom: 300px; left: 150px;">
+          <h3>DO-WHILE Loop Exhibition</h3>
+          <pre><code>do {
+  spawnRose();
+  count++;
+} while (count < 40);</code></pre>
+          <button class="loop-btn" onclick="runDoWhileLoop()">Run Loop</button>
+          <div class="loop-status" id="dowhile-status">Roses planted: 0</div>
+        </div>
 
-          <!-- Boolean Choices -->
-          <div class="choices-container">
-            <button class="choice-btn" onclick="chooseFox()">Fox: Stay</button>
-            <button class="choice-btn" onclick="chooseSnake()">Snake: Go Back</button>
-          </div>
+        <div class="choices-container">
+          <img id="fox-btn" src="assts/fox.png" class="image-btn" onclick="chooseFox()" alt="Fox: Stay (Add Roses)">
+          <img id="snake-btn" src="assts/snake.png" class="image-btn" onclick="chooseSnake()" alt="Snake: Fly Back Home">
+</div>
         </div>
       </div>
     </section>
-
   </div>
 </div>
 

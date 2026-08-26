@@ -1,13 +1,5 @@
-/* ==========================================
-     🖼️ CUSTOM IMAGE SETTINGS (PLANETS & BGS)
-     Paste your image URLs inside the url('...') 
-     SYNTAX EXAMPLE:
-     --img-deep-space-bg: url('https://example.com/my-space-bg.jpg');
-     ========================================== */
-  :root {
-    --img-deep-space-bg: none; /* Change 'none' to your URL to add a background image */
+:root {
     --bg-space: #0b0c10;
-    --bg-stars: #1f2833;
     --accent: #c5a880;
     --text: #e0e0e0;
     --stage-width: 1600px;
@@ -18,248 +10,499 @@
 
   html, body {
     height: 100%;
-    background-color: var(--bg-space);
-    background-image: var(--img-deep-space-bg);
-    background-size: cover;
-    background-position: center;
+    background: var(--bg-space);
     color: var(--text);
     font-family: 'Space Mono', 'Courier New', monospace;
     overflow: hidden;
   }
 
-  /* Static Starfield Background Layer */
-  #star-container {
-    position: fixed;
-    top: 0; left: 0; width: 100vw; height: 100vh;
-    z-index: 0; pointer-events: none;
-    /* Rich, static night sky background */
-    background-image: 
-      radial-gradient(1px 1px at 20px 30px, rgba(255,255,255,0.8), transparent),
-      radial-gradient(1px 1px at 40px 70px, rgba(255,255,255,0.6), transparent),
-      radial-gradient(2px 2px at 90px 40px, rgba(255,255,255,0.9), transparent),
-      radial-gradient(2px 2px at 160px 120px, rgba(255,255,255,0.5), transparent);
-    background-repeat: repeat;
-    background-size: 200px 200px;
-  }
-
-  .stars {
-    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-    background-repeat: repeat;
-  }
-  .stars-1 {
-    background-image: radial-gradient(1px 1px at 20px 30px, #ffffff, transparent), radial-gradient(1px 1px at 150px 80px, rgba(255,255,255,0.8), transparent);
-    background-size: 200px 200px; animation: blink 3s infinite alternate;
-  }
-  .stars-2 {
-    background-image: radial-gradient(1.5px 1.5px at 80px 140px, #ffffff, transparent), radial-gradient(1.5px 1.5px at 240px 50px, rgba(255,255,255,0.6), transparent);
-    background-size: 300px 300px; animation: blink 4s infinite alternate-reverse;
-  }
-  .stars-3 {
-    background-image: radial-gradient(2px 2px at 50px 50px, rgba(255,255,255,0.9), transparent), radial-gradient(2px 2px at 300px 250px, rgba(255,255,255,0.5), transparent);
-    background-size: 400px 400px; animation: blink 5s infinite alternate;
-  }
-
-  @keyframes blink { 0% { opacity: 0.2; } 100% { opacity: 1; } }
-
-  /* Blinking Lightning / Night Sky Flash Effect */
-  #sky-flash-overlay {
-    position: fixed; 
-    top: 0; left: 0; width: 100vw; height: 100vh;
-    background: #ffffff;
-    z-index: 0; 
-    pointer-events: none;
-    opacity: 0;
-    mix-blend-mode: overlay;
-    animation: sky-flash 12s infinite;
-  }
-
-  @keyframes sky-flash {
-    0%, 91%, 95%, 100% { opacity: 0; }
-    92% { opacity: 0.3; } /* First quick, faint flash */
-    93% { opacity: 0; }
-    94% { opacity: 0.6; } /* Second, brighter flash */
-  }
-
   /* ==========================================
-     🌠 SHOOTING STARS EFFECT
+     BACKGROUND EFFECTS
      ========================================== */
+  #star-container {
+    position: absolute;
+    inset: 0;
+    width: 100vw;
+    height: 100vh;
+    background-image: 
+      radial-gradient(1px 1px at 20px 30px, #ffffff, rgba(0,0,0,0)),
+      radial-gradient(1px 1px at 40px 70px, #ffffff, rgba(0,0,0,0)),
+      radial-gradient(2px 2px at 90px 40px, rgba(255,255,255,0.8), rgba(0,0,0,0)),
+      radial-gradient(2px 2px at 160px 120px, rgba(255,255,255,0.6), rgba(0,0,0,0)),
+      radial-gradient(1.5px 1.5px at 250px 250px, #ffffff, rgba(0,0,0,0)),
+      radial-gradient(2px 2px at 300px 100px, rgba(255,255,255,0.9), rgba(0,0,0,0)),
+      radial-gradient(1px 1px at 450px 300px, #ffffff, rgba(0,0,0,0));
+    background-repeat: repeat;
+    background-size: 500px 500px;
+    z-index: 0;
+  }
+
+  .twinkle-layer {
+    position: absolute;
+    inset: 0;
+    width: 100vw;
+    height: 100vh;
+    background-repeat: repeat;
+    z-index: 2;
+  }
+  .twinkle-1 {
+    background-image: radial-gradient(2px 2px at 100px 200px, #fff, transparent);
+    background-size: 300px 300px;
+    animation: twinkle-bg 3s ease-in-out infinite alternate;
+  }
+  .twinkle-2 {
+    background-image: radial-gradient(3px 3px at 50px 50px, #c5a880, transparent);
+    background-size: 400px 400px;
+    animation: twinkle-bg 5s ease-in-out infinite alternate 1s;
+  }
+  @keyframes twinkle-bg {
+    0% { opacity: 0.2; transform: scale(1); }
+    100% { opacity: 1; transform: scale(1.1); }
+  }
+
   .shooting-star {
     position: absolute;
-    width: 120px;
+    width: 150px;
     height: 2px;
-    background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 100%);
+    background: linear-gradient(90deg, transparent, var(--accent), #fff);
+    border-radius: 50%;
     opacity: 0;
+    z-index: 2;
     pointer-events: none;
-    z-index: 10;
   }
   
-  .shooting-star::after {
-    content: ''; position: absolute; right: 0; top: 50%; transform: translateY(-50%);
-    width: 4px; height: 4px; border-radius: 50%; background: #fff;
-    box-shadow: 0 0 10px 2px rgba(197, 168, 128, 0.8);
-  }
+  .s1 { top: 10%; left: 10%; animation: shoot 8s linear infinite 2s; }
+  .s2 { top: 25%; left: 0%; animation: shoot 13s linear infinite 6s; }
+  .s3 { top: 15%; left: 50%; animation: shoot 10s linear infinite 1s; }
   
-  .star-shoot-1 { top: 10%; right: 20%; animation: shoot 8s infinite 2s; }
-  .star-shoot-2 { top: -10%; right: 40%; animation: shoot 13s infinite 5s; }
-  .star-shoot-3 { top: 30%; right: -10%; animation: shoot 10s infinite 8s; }
-
   @keyframes shoot {
-    0% { transform: rotate(135deg) translateX(-200px); opacity: 0; }
+    0% { transform: rotate(-45deg) translateX(0); opacity: 0; }
     5% { opacity: 1; }
-    15% { transform: rotate(135deg) translateX(1200px); opacity: 0; }
-    100% { transform: rotate(135deg) translateX(1200px); opacity: 0; }
+    10% { transform: rotate(-45deg) translateX(1500px); opacity: 0; }
+    100% { opacity: 0; }
+  }
+
+  #easter-egg-hint {
+    position: fixed; top: 20px; right: 30px; color: rgba(255, 255, 255, 0.3);
+    font-size: 0.8rem; z-index: 1000; pointer-events: none; letter-spacing: 1px;
+    text-transform: uppercase;
   }
 
   #viewport {
     height: 100vh; height: 100dvh; width: 100vw;
-    overflow: hidden; position: relative; z-index: 1;
+    overflow: hidden; position: relative; z-index: 10;
   }
 
   #floor-strip {
     display: flex; flex-direction: column; width: 100%;
-    transition: transform 800ms cubic-bezier(0.65, 0, 0.35, 1);
+    transition: transform 1000ms cubic-bezier(0.65, 0, 0.35, 1);
     will-change: transform;
   }
 
   .floor {
     height: 100vh; height: 100dvh; width: 100vw;
     flex-shrink: 0; display: flex; align-items: center; justify-content: center;
-    position: relative; overflow: hidden; background: transparent; 
+    position: relative; background: transparent; 
   }
 
   .floor-placeholder-box {
-    width: var(--stage-width); height: var(--stage-height);
-    flex-shrink: 0; display: flex; flex-direction: column;
-    align-items: center; justify-content: center; position: relative;
+    width: var(--stage-width); height: var(--stage-height); flex-shrink: 0;
+    display: flex; flex-direction: column; align-items: center;
+    justify-content: center; position: relative;
   }
 
-  .stage-layer {
-    position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none;
-  }
-  .stage-layer > * { pointer-events: auto; }
-
-  @keyframes float {
-    0%, 100% { transform: translateY(0px) rotate(0deg); }
-    50% { transform: translateY(-20px) rotate(1deg); }
-  }
-  @keyframes float-reverse {
-    0%, 100% { transform: translateY(0px) rotate(0deg); }
-    50% { transform: translateY(15px) rotate(-1deg); }
-  }
-  @keyframes twinkle {
-    0%, 100% { opacity: 1; transform: scale(1); }
-    50% { opacity: 0.5; transform: scale(0.8); }
-  }
-
-  .planet-interactive {
-    position: absolute; cursor: pointer; border-radius: 50%;
-    transition: transform 300ms ease, box-shadow 300ms ease, filter 300ms ease;
-  }
+  /* ==========================================
+     THE PRINCE (SITTING & TRAVELING LOGIC)
+     ========================================== */
   
-  .planet-interactive > img:first-child {
-    width: 100%; height: 100%; object-fit: contain; pointer-events: none;
+  #traveling-prince {
+    position: absolute;
+    z-index: 100;
+    /* Added opacity to the transitions for smooth fade-ins! */
+    transition: 
+    top 1000ms cubic-bezier(0.65, 0, 0.35, 1), 
+    left 1000ms cubic-bezier(0.65, 0, 0.35, 1), 
+      transform 1000ms cubic-bezier(0.65, 0, 0.35, 1),
+      opacity 600ms ease; 
+    width: 250px;
+    height: 250px;
+    pointer-events: none;
+    animation: float-prince 4s ease-in-out infinite;
   }
 
-  .planet-interactive:hover {
-    transform: scale(1.05) !important;
-    filter: brightness(1.2) drop-shadow(0 0 20px rgba(197, 168, 128, 0.4));
-    z-index: 20;
+  #traveling-prince img 
+    {
+      width: 250px; 
+      height: 250px; 
+      object-fit: contain;
+      filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.3));
+    }
+
+  @keyframes float-prince {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-15px); }
   }
 
-  /* The screen mix-blend-mode makes the black background of your Baobab.jpg completely transparent! */
-  .planet-home { width: 350px; height: 350px; top: 200px; left: 200px; mix-blend-mode: screen; animation: float 6s ease-in-out infinite; }
+  /* THE MAGIC COORDINATES */
   
-  .planet-small-1 { width: 120px; height: 120px; top: 150px; left: 600px; animation: float 7s ease-in-out infinite; }
-  .planet-small-2 { width: 90px; height: 90px; top: 500px; left: 300px; animation: float-reverse 5s ease-in-out infinite; }
-  .planet-small-3 { width: 150px; height: 150px; top: 200px; right: 400px; animation: float 8s ease-in-out infinite; }
-  .planet-small-4 { width: 80px; height: 80px; top: 600px; right: 250px; animation: float-reverse 6s ease-in-out infinite; }
-
-  .planet-huge-left { width: 800px; height: 800px; left: -150px; animation: float-reverse 10s ease-in-out infinite; }
-  .planet-huge-left-top { top: calc(100% - 400px); }
-  .planet-huge-left-bottom { top: -400px; }
-
-  .planet-huge-right { width: 700px; height: 700px; right: -100px; animation: float 12s ease-in-out infinite; }
-  .planet-huge-right-top { top: calc(100% - 350px); }
-  .planet-huge-right-bottom { top: -350px; }
-
-  .ground-hollow {
-    position: absolute; bottom: -600px; left: 50%; transform: translateX(-50%);
-    width: 2000px; height: 1000px; border-radius: 50%;
+  /* Floor 1 (Hidden on planet, waiting to jump) */
+  body[data-active-floor="0"]:not([data-prince-state="ready"]) 
+    #traveling-prince 
+    { 
+      top: 35vh; 
+      left: 25vw; 
+      transform: rotate(0deg) scale(0.5); 
+      opacity: 0; 
   }
+
+  /* Floor 1 (CLICKED: Leaps to the middle of the screen!) */
+  body[data-active-floor="0"][data-prince-state="ready"] 
+    #traveling-prince 
+    { 
+      top: 40vh; 
+      left: 40vw; 
+      transform: translate(-50%, -50%) rotate(0deg) scale(2.0);
+      opacity: 1; 
+    }
+
+  body[data-active-floor="0"][data-prince-state="ready"] #traveling-prince img 
+    {
+      width: 350px; 
+      height: 350px;
+    }
+  /* Keep him visible on all other floors */
+  body:not([data-active-floor="0"]) #traveling-prince {
+    opacity: 1;
+  }
+
+  /* Floor 2 */
+  body[data-active-floor="1"] #traveling-prince { top: 40vh; left: 30vw; 
+    transform: rotate(-15deg) scale(0.95); }
+  /* Floor 3 */
+  body[data-active-floor="2"] #traveling-prince { top: 55vh; left: 60vw; 
+    transform: rotate(65deg) scale(0.85); }
+  /* Floor 4 */
+  body[data-active-floor="3"] #traveling-prince { top: 45vh; left: 50vw; 
+    transform: rotate(0deg) scale(1.1); margin-left: -60px; animation: none; }
+
+
+  .planet-container 
+    {
+      position: absolute; 
+      border-radius: 50%; 
+      display: flex;
+      align-items: center; 
+      justify-content: center; 
+      cursor: pointer;
+      transition: transform 0.3s ease, 
+      box-shadow 0.3s ease;
+    }
+  .planet-container:hover 
+    {
+      transform: scale(1.02); 
+      box-shadow: 0 0 40px rgba(197, 168, 128, 0.2);
+    }
+
+  .planet-container img, .ground-hollow img 
+    {
+      position: absolute; 
+      width: 100%; 
+      height: 100%;
+      object-fit: contain; 
+      pointer-events: none; 
+    }
+
+  @keyframes float 
+    { 0%, 100% 
+      { 
+        transform: translateY(0px);
+      } 
+      50% 
+      { 
+        transform: translateY(-20px); 
+      } 
+    }
+
+  @keyframes float-rev 
+      { 0%, 100% 
+        { 
+          transform: translateY(0px); 
+        } 
+          50% 
+        { 
+          transform: translateY(15px); 
+        } 
+      }
+
+  /* Sitting Prince styles */
+  .sitting-prince 
+    {
+      position: absolute; 
+      width: 100px; 
+      height: 100px;    
+      top: -30px;   
+      left: 85px; 
+      z-index: 10; 
+      pointer-events: auto;
+      cursor: pointer; 
+      transition: opacity 0.4s ease, 
+      transform 0.3s ease;
+    } 
   
-  .ground-hollow > img:first-child {
-    width: 100%; height: 100%; object-fit: cover; object-position: top center;
-    border-radius: 50%; pointer-events: none;
+  .sitting-prince:hover 
+    {
+      transform: scale(1.1);
+      filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.4));
+    }
+
+  /* Hide the sitting prince when he's activated or on other floors */
+    body[data-prince-state="ready"] 
+      .sitting-prince,
+    body:not([data-active-floor="0"]) 
+      .sitting-prince 
+        {
+      opacity: 0; 
+      pointer-events: none;
   }
 
-  img.bird-sprite, img.rose-sprite, img.baobab-sprite {
-    position: absolute; user-select: none; object-fit: contain; pointer-events: none;
-  }
-  img.bird-sprite { width: 80px !important; height: 80px !important; animation: twinkle 2s ease-in-out infinite alternate; filter: drop-shadow(0 0 5px rgba(255,255,255,0.5)); }
-  img.rose-sprite { width: 60px !important; height: 60px !important; z-index: 5; filter: drop-shadow(0 4px 4px rgba(0,0,0,0.5)); }
-  img.baobab-sprite { width: 50px !important; height: 50px !important; z-index: 10; }
+  .sitting-prince img { width: 100%; height: 100%; object-fit: contain; }
 
-  .loop-panel {
-    position: absolute; background: rgba(11, 12, 16, 0.85); border: 1px solid var(--accent);
-    padding: 20px; border-radius: 8px; text-align: left; backdrop-filter: blur(4px); z-index: 30;
-  }
-  .loop-panel h3 { margin-bottom: 10px; font-size: 1.1rem; color: var(--accent); }
-  .loop-panel code { display: block; background: #000; padding: 10px; margin-bottom: 15px; font-size: 0.8rem; color: #a3b8cc; }
-  .loop-btn {
-    padding: 8px 16px; background: transparent; border: 1px solid var(--accent);
-    color: var(--accent); cursor: pointer; transition: 0.2s;
-  }
-  .loop-btn:hover { background: rgba(197, 168, 128, 0.2); }
+  /* B-612 */
+  .planet-home 
+    {
+      width: 250px; 
+      height: 250px; 
+      top: 250px; 
+      left: 200px;
+      animation: float 6s ease-in-out infinite; 
+      mix-blend-mode: screen; 
+    }
+
+  /* Easter Egg Secret Planet */
+  .easter-egg-planet 
+    {
+      width: 60px; 
+      height: 60px; 
+      top: 100px; 
+      right: 150px;
+      animation: float-rev 4s infinite; opacity: 0.3;
+    }
+  .easter-egg-planet:hover { opacity: 1; transform: scale(1.5); }
+
+  /* Standard Planets (Un-intertwined!) */
+  .planet-small-1 
+    { 
+      width: 220px; 
+      height: 220px; 
+      top: 150px; 
+      left: 800px; 
+      animation: float-rev 7s infinite; 
+    }
+  .planet-small-2 
+    { 
+      width: 310px; 
+      height: 310px; 
+      top: 500px; 
+      left: 1200px; 
+      animation: float 5s infinite; 
+    }
+  .planet-small-3 
+    { 
+      width: 350px; 
+      height: 350px; 
+      top: 200px; 
+      left: -50px; 
+      animation: float-rev 8s infinite; 
+    }
+  .planet-small-4 
+    { 
+      width: 350px; 
+      height: 350px; 
+      top: 320px; 
+      left: 1010px; 
+      animation: float-rev 8s infinite; 
+    }
+  .planet-small-5 
+    { 
+      width: 350px; 
+      height: 350px; 
+      top: 400px; 
+      left: 600px; 
+      animation: float-rev 8s infinite; 
+      }
+  .planet-huge-left 
+    { 
+      width: 800px; 
+      height: 800px; 
+      left: -150px; 
+      top: 50px; 
+      animation: float-rev 10s infinite; 
+    }
+  .planet-huge-right 
+    { 
+      width: 400px; 
+      height: 400px; 
+      right: -100px; 
+      top: 100px; 
+      animation: 
+      float 12s infinite; 
+    }
+  .ground-hollow 
+    {
+      position: absolute; 
+      bottom: -600px; 
+      left: 50%; 
+      transform: translateX(-50%);
+      width: 2000px; 
+      height: 1000px; 
+      border-radius: 50%;
+    }
+
+  .img-placeholder 
+    {
+      width: 100%; 
+      height: 100%; 
+      border-radius: 50%; 
+      border: 2px dashed rgba(197, 168, 128, 0.4);
+      display: flex; 
+      align-items: center; 
+      justify-content: 
+      center; color: rgba(197, 168, 128, 0.6); 
+      font-size: 14px; 
+      text-transform: uppercase; 
+      letter-spacing: 2px;
+    }
+
+  .loop-panel 
+    {
+      position: absolute; 
+      background: rgba(11, 12, 16, 0.9); 
+      border: 1px solid var(--accent);
+      padding: 20px; 
+      border-radius: 8px; 
+      color: var(--accent); 
+      backdrop-filter: blur(8px);
+      width: 350px; 
+      z-index: 20; 
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    }
+
+  .loop-panel h3 
+    { 
+      font-size: 1.2rem; 
+      margin-bottom: 10px; 
+      border-bottom: 1px dashed var(--accent); 
+      padding-bottom: 5px; 
+    }
+  .loop-panel pre 
+  {
+      background: rgba(0,0,0,0.5); 
+      padding: 10px; 
+      border-radius: 4px; 
+      font-size: 0.85rem; 
+      margin-bottom: 15px; color: #fff; }
   
-  #panel-for { top: 100px; right: 100px; }
-  #panel-while { bottom: 100px; left: 100px; }
-  #panel-do-while { top: 150px; left: 100px; }
+  .loop-btn 
+  {
+      width: 100%; 
+      padding: 12px; 
+      background: transparent; 
+      border: 1px solid var(--accent); 
+      color: var(--accent); 
+      font-family: inherit; 
+      font-size: 1rem; 
+      text-transform: uppercase;
+      cursor: pointer; 
+      transition: all 0.3s ease;
+  }
+  .loop-btn:hover { background: rgba(197, 168, 128, 0.15); }
+  .loop-status { margin-top: 10px; font-size: 0.9rem; text-align: center; }
 
+  .loop-sprite {
+    position: absolute;
+    user-select: none;
+    width: 40px !important; 
+    height: 40px !important;
+    object-fit: contain;
+    animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  }
+  @keyframes popIn { 0% { transform: scale(0); } 100% { transform: scale(1); } }
+  .loop-status { margin-top: 15px; font-size: 14px; color: #a8b2d1; font-family: monospace; }
+  
+  .image-btn {
+    height: 70px; /* Adjust this to make your fox bigger/smaller */
+    width: auto; 
+    max-width: 250px
+    cursor: pointer
+    transition: transform 0.2s ease, filter 0.2s ease;
+  }
+  #fox-btn 
+  {
+    width: 260px;
+    height: 260px;
+    position: absolute;
+    bottom: 80px;
+    left: -170px;
+  }
+  #snake-btn
+  {
+    width: 200px;
+    height: 200px;
+    position: absolute;
+    bottom: 50px;
+    left: 90px;
+  }
+  /* Choices UI */
+  .choices-container {
+    position: absolute; bottom: 120px; left: 50%; transform: translateX(-50%);
+    display: flex; gap: 40px; z-index: 10; align-items: center;
+  }
   .choices-container {
     position: absolute; bottom: 120px; left: 50%; transform: translateX(-50%);
     display: flex; gap: 40px; z-index: 10;
   }
-  .choice-btn {
-    padding: 16px 32px; background: rgba(11, 12, 16, 0.8); border: 1px solid var(--accent);
-    border-radius: 4px; color: var(--accent); font-family: inherit; font-size: 1rem;
-    text-transform: uppercase; letter-spacing: 0.1em; cursor: pointer; transition: all 300ms ease;
-  }
-  .choice-btn:hover { background: rgba(197, 168, 128, 0.15); box-shadow: 0 0 15px rgba(197, 168, 128, 0.3); transform: translateY(-2px); }
 
-  #floor-indicator { position: fixed; left: 24px; top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; gap: 20px; z-index: 10; }
-  .indicator-dot { width: 14px; height: 14px; border-radius: 50%; border: 1px dashed var(--accent); background: transparent; cursor: pointer; transition: all 300ms ease; position: relative; }
-  .indicator-dot::after { content: ''; position: absolute; top: 14px; left: 6px; width: 1px; height: 20px; background: dashed 1px var(--accent); opacity: 0.5; }
-  .indicator-dot:last-child::after { display: none; }
-  .indicator-dot.active { background: var(--accent); border: 1px solid var(--accent); box-shadow: 0 0 10px var(--accent); }
+  #custom-modal 
+  {
+    position: fixed; 
+    inset: 0; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center;
+    background: rgba(4, 5, 5, 0.8); 
+    backdrop-filter: blur(5px); 
+    z-index: 1000; 
+    opacity: 0; 
+    pointer-events: none; 
+    transition: opacity 0.3s ease;
+  }
+  #custom-modal.visible 
+    { opacity: 1; pointer-events: auto; }
+  .modal-box 
+    {
+      background: #1f2833; 
+      border: 1px solid var(--accent); 
+      padding: 40px; border-radius: 8px; 
+      text-align: center; 
+      max-width: 500px; 
+      color: var(--text); 
+      box-shadow: 0 10px 40px #000;
+    }
+  .modal-box p 
+    { 
+      font-size: 1.2rem; 
+      margin-bottom: 30px; 
+      line-height: 1.6; 
+    }
 
-  .custom-modal {
-    position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(11, 12, 16, 0.85);
-    display: flex; align-items: center; justify-content: center; z-index: 1000; opacity: 0; pointer-events: none;
-    transition: opacity 300ms ease; backdrop-filter: blur(5px);
-  }
-  .custom-modal.active { opacity: 1; pointer-events: auto; }
-  .custom-modal-box {
-    background: var(--bg-stars); border: 1px solid var(--accent); padding: 40px; border-radius: 8px; text-align: center;
-    max-width: 500px; box-shadow: 0 0 30px rgba(197, 168, 128, 0.2); transform: translateY(20px); transition: transform 300ms ease;
-  }
-  .custom-modal.active .custom-modal-box { transform: translateY(0); }
-  .custom-modal p { font-size: 1.2rem; line-height: 1.5; margin-bottom: 30px; }
-  .custom-modal button { padding: 10px 24px; background: transparent; border: 1px solid var(--accent); color: var(--accent); cursor: pointer; font-family: inherit; text-transform: uppercase; transition: all 200ms ease; }
-  .custom-modal button:hover { background: rgba(197, 168, 128, 0.2); }
+  .image-btn:hover 
+    {
+      transform: scale(1.1);
+      filter: brightness(1.2); /* Makes it glow slightly */
+      filter: drop-shadow(0 0 14px rgba(11, 9, 7, 0.6))
+    }
 
-  .flying-prince {
-    position: fixed; bottom: 150px; left: 50%; width: 100px; height: 100px;
-    z-index: 1000; pointer-events: none; animation: flyHome 1.2s ease-in-out forwards;
-    filter: drop-shadow(0 0 15px rgba(197, 168, 128, 0.8));
-  }
-
-  @keyframes flyHome {
-    0% { transform: translate(-50%, 0) scale(1) rotate(0deg); opacity: 0; }
-    15% { opacity: 1; }
-    100% { transform: translate(-40vw, -80vh) scale(0.1) rotate(-45deg); opacity: 0; }
-  }
-
-  .rive-container {
-    position: absolute; width: 400px; height: 400px; bottom: 100px; left: 550px;
-    border: 1px dashed rgba(255,255,255,0.2); border-radius: 16px; display: flex; align-items: center; justify-content: center; text-align: center; color: rgba(255,255,255,0.3);
-  }
+    .image-btn:active 
+    {
+      transform: scale(0.95);
+    }
