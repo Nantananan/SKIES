@@ -1,520 +1,587 @@
+/* ============================================================
+   THE LITTLE PRINCE - JOURNEY
+   Stylesheet: background effects, the traveling prince,
+   planets, loop-demo panels, and UI elements.
+   ============================================================ */
+
 :root {
-    --bg-space: #0b0c10;
-    --accent: #c5a880;
-    --text: #e0e0e0;
-    --stage-width: 1600px;
-    --stage-height: 900px;
-  }
+  --bg-space: #0b0c10;
+  --accent: #ded2c0;
+  --text: #e0e0e0;
+  --stage-width: 1600px;
+  --stage-height: 900px;
+}
 
-  * { box-sizing: border-box; margin: 0; padding: 0; }
+/* Universal reset */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
 
-  html, body {
-    height: 100%;
-    background: var(--bg-space);
-    color: var(--text);
-    font-family: 'Space Mono', 'Courier New', monospace;
-    overflow: hidden;
-  }
-
-  /* ==========================================
-     BACKGROUND EFFECTS
-     ========================================== */
-  #star-container {
-    position: absolute;
-    inset: 0;
-    width: 100vw;
-    height: 100vh;
-    background-image: 
-      radial-gradient(1px 1px at 20px 30px, #ffffff, rgba(0,0,0,0)),
-      radial-gradient(1px 1px at 40px 70px, #ffffff, rgba(0,0,0,0)),
-      radial-gradient(2px 2px at 90px 40px, rgba(255,255,255,0.8), rgba(0,0,0,0)),
-      radial-gradient(2px 2px at 160px 120px, rgba(255,255,255,0.6), rgba(0,0,0,0)),
-      radial-gradient(1.5px 1.5px at 250px 250px, #ffffff, rgba(0,0,0,0)),
-      radial-gradient(2px 2px at 300px 100px, rgba(255,255,255,0.9), rgba(0,0,0,0)),
-      radial-gradient(1px 1px at 450px 300px, #ffffff, rgba(0,0,0,0));
-    background-repeat: repeat;
-    background-size: 500px 500px;
-    z-index: 0;
-  }
-
-  .twinkle-layer {
-    position: absolute;
-    inset: 0;
-    width: 100vw;
-    height: 100vh;
-    background-repeat: repeat;
-    z-index: 2;
-  }
-  .twinkle-1 {
-    background-image: radial-gradient(2px 2px at 100px 200px, #fff, transparent);
-    background-size: 300px 300px;
-    animation: twinkle-bg 3s ease-in-out infinite alternate;
-  }
-  .twinkle-2 {
-    background-image: radial-gradient(3px 3px at 50px 50px, #c5a880, transparent);
-    background-size: 400px 400px;
-    animation: twinkle-bg 5s ease-in-out infinite alternate 1s;
-  }
-  @keyframes twinkle-bg {
-    0% { opacity: 0.2; transform: scale(1); }
-    100% { opacity: 1; transform: scale(1.1); }
-  }
-
-  .shooting-star {
-    position: absolute;
-    width: 150px;
-    height: 2px;
-    background: linear-gradient(90deg, transparent, var(--accent), #fff);
-    border-radius: 50%;
-    opacity: 0;
-    z-index: 2;
-    pointer-events: none;
-  }
-  
-  .s1 { top: 10%; left: 10%; animation: shoot 8s linear infinite 2s; }
-  .s2 { top: 25%; left: 0%; animation: shoot 13s linear infinite 6s; }
-  .s3 { top: 15%; left: 50%; animation: shoot 10s linear infinite 1s; }
-  
-  @keyframes shoot {
-    0% { transform: rotate(-45deg) translateX(0); opacity: 0; }
-    5% { opacity: 1; }
-    10% { transform: rotate(-45deg) translateX(1500px); opacity: 0; }
-    100% { opacity: 0; }
-  }
-
-  #easter-egg-hint {
-    position: fixed; top: 20px; right: 30px; color: rgba(255, 255, 255, 0.3);
-    font-size: 0.8rem; z-index: 1000; pointer-events: none; letter-spacing: 1px;
-    text-transform: uppercase;
-  }
-
-  #viewport {
-    height: 100vh; height: 100dvh; width: 100vw;
-    overflow: hidden; position: relative; z-index: 10;
-  }
-
-  #floor-strip {
-    display: flex; flex-direction: column; width: 100%;
-    transition: transform 1000ms cubic-bezier(0.65, 0, 0.35, 1);
-    will-change: transform;
-  }
-
-  .floor {
-    height: 100vh; height: 100dvh; width: 100vw;
-    flex-shrink: 0; display: flex; align-items: center; justify-content: center;
-    position: relative; background: transparent; 
-  }
-
-  .floor-placeholder-box {
-    width: var(--stage-width); height: var(--stage-height); flex-shrink: 0;
-    display: flex; flex-direction: column; align-items: center;
-    justify-content: center; position: relative;
-  }
-
-  /* ==========================================
-     THE PRINCE (SITTING & TRAVELING LOGIC)
-     ========================================== */
-  
-  #traveling-prince {
-    position: absolute;
-    z-index: 100;
-    /* Added opacity to the transitions for smooth fade-ins! */
-    transition: 
-    top 1000ms cubic-bezier(0.65, 0, 0.35, 1), 
-    left 1000ms cubic-bezier(0.65, 0, 0.35, 1), 
-      transform 1000ms cubic-bezier(0.65, 0, 0.35, 1),
-      opacity 600ms ease; 
-    width: 250px;
-    height: 250px;
-    pointer-events: none;
-    animation: float-prince 4s ease-in-out infinite;
-  }
-
-  #traveling-prince img 
-    {
-      width: 250px; 
-      height: 250px; 
-      object-fit: contain;
-      filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.3));
-    }
-
-  @keyframes float-prince {
-    0%, 100% { transform: translateY(0px); }
-    50% { transform: translateY(-15px); }
-  }
-
-  /* THE MAGIC COORDINATES */
-  
-  /* Floor 1 (Hidden on planet, waiting to jump) */
-  body[data-active-floor="0"]:not([data-prince-state="ready"]) 
-    #traveling-prince 
-    { 
-      top: 35vh; 
-      left: 25vw; 
-      transform: rotate(0deg) scale(0.5); 
-      opacity: 0; 
-  }
-
-  /* Floor 1 (CLICKED: Leaps to the middle of the screen!) */
-  body[data-active-floor="0"][data-prince-state="ready"] 
-    #traveling-prince 
-    { 
-      top: 40vh; 
-      left: 40vw; 
-      transform: translate(-50%, -50%) rotate(0deg) scale(2.0);
-      opacity: 1; 
-    }
-
-  body[data-active-floor="0"][data-prince-state="ready"] #traveling-prince img 
-    {
-      width: 350px; 
-      height: 350px;
-    }
-  /* Keep him visible on all other floors */
-  body:not([data-active-floor="0"]) #traveling-prince {
-    opacity: 1;
-  }
-
-  /* Floor 2 */
-  body[data-active-floor="1"] #traveling-prince { top: 40vh; left: 30vw; 
-    transform: rotate(-15deg) scale(0.95); }
-  /* Floor 3 */
-  body[data-active-floor="2"] #traveling-prince { top: 55vh; left: 60vw; 
-    transform: rotate(65deg) scale(0.85); }
-  /* Floor 4 */
-  body[data-active-floor="3"] #traveling-prince { top: 60vh; left: 50vw; 
-    transform: translate(-50%, -50%) rotate(0deg) scale(1.1); animation: none; }
+html, body {
+  height: 100%;
+  background: var(--bg-space);
+  color: var(--text);
+  font-family: 'Space Mono', 'Courier New', monospace;
+  overflow: hidden; /* Prevents native scrollbars; navigation is handled via JS wheel events */
+}
 
 
-  .planet-container 
-    {
-      position: absolute; 
-      border-radius: 50%; 
-      display: flex;
-      align-items: center; 
-      justify-content: center; 
-      cursor: pointer;
-      transition: transform 0.3s ease, 
-      box-shadow 0.3s ease;
-    }
-  .planet-container:hover 
-    {
-      transform: scale(1.02); 
-      box-shadow: 0 0 40px rgba(197, 168, 128, 0.2);
-    }
+/* ==========================================
+   BACKGROUND EFFECTS
+   ========================================== */
 
-  .planet-container img
-    {
-      position: absolute; 
-      width: 100%; 
-      height: 100%;
-      object-fit: contain; 
-      pointer-events: none; 
-    }
-    .ground-hollow img 
-    {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      object-position: bottom;
-      pointer-events: none;
-    }
+/* Starfield made of layered radial gradients, tiled across the screen */
+#star-container {
+  position: absolute;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  background-image:
+    radial-gradient(1px 1px at 20px 30px, #ffffff, rgba(0, 0, 0, 0)),
+    radial-gradient(1px 1px at 40px 70px, #ffffff, rgba(0, 0, 0, 0)),
+    radial-gradient(2px 2px at 90px 40px, rgba(255, 255, 255, 0.8), rgba(0, 0, 0, 0)),
+    radial-gradient(2px 2px at 160px 120px, rgba(255, 255, 255, 0.6), rgba(0, 0, 0, 0)),
+    radial-gradient(1.5px 1.5px at 250px 250px, #ffffff, rgba(0, 0, 0, 0)),
+    radial-gradient(2px 2px at 300px 100px, rgba(255, 255, 255, 0.9), rgba(0, 0, 0, 0)),
+    radial-gradient(1px 1px at 450px 300px, #ffffff, rgba(0, 0, 0, 0));
+  background-repeat: repeat;
+  background-size: 500px 500px;
+  z-index: 0;
+}
 
-  @keyframes float 
-    { 0%, 100% 
-      { 
-        transform: translateY(0px);
-      } 
-      50% 
-      { 
-        transform: translateY(-20px); 
-      } 
-    }
+/* Two extra tiled layers that gently pulse for a twinkling effect */
+.twinkle-layer {
+  position: absolute;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  background-repeat: repeat;
+  z-index: 2;
+}
 
-  @keyframes float-rev 
-      { 0%, 100% 
-        { 
-          transform: translateY(0px); 
-        } 
-          50% 
-        { 
-          transform: translateY(15px); 
-        } 
-      }
+.twinkle-1 {
+  background-image: radial-gradient(2px 2px at 100px 200px, #fff, transparent);
+  background-size: 300px 300px;
+  animation: twinkle-bg 3s ease-in-out infinite alternate;
+}
 
-  /* Sitting Prince styles */
-  .sitting-prince 
-    {
-      position: absolute; 
-      width: 100px; 
-      height: 100px;    
-      top: 40px;   
-      left: 110px; 
-      z-index: 10; 
-      pointer-events: auto;
-      cursor: pointer; 
-      transition: opacity 0.4s ease, transform 0.3s ease;
-    } 
-  
-  .sitting-prince:hover 
-    {
-      transform: scale(1.1);
-      filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.4));
-    }
+.twinkle-2 {
+  background-image: radial-gradient(3px 3px at 50px 50px, #c5a880, transparent);
+  background-size: 400px 400px;
+  animation: twinkle-bg 5s ease-in-out infinite alternate 1s;
+}
 
-  /* Hide the sitting prince when he's activated or on other floors */
-    body[data-prince-state="ready"] 
-      .sitting-prince,
-    body:not([data-active-floor="0"]) 
-      .sitting-prince 
-        {
-      opacity: 0; 
-      pointer-events: none;
-  }
+@keyframes twinkle-bg {
+  0%   { opacity: 0.2; transform: scale(1); }
+  100% { opacity: 1;   transform: scale(1.1); }
+}
 
-  .sitting-prince img 
-    { 
-      width: 100%; 
-      height: 100%; 
-      object-fit: contain; 
-    }
+/* Individual shooting star streaks (used both on load and by the meteor shower easter egg) */
+.shooting-star {
+  position: absolute;
+  width: 150px;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--accent), #fff);
+  border-radius: 50%;
+  opacity: 0;
+  z-index: 2;
+  pointer-events: none;
+}
 
-  /* B-612 */
-  .planet-home 
-    {
-      width: 290px; 
-      height: 290px; 
-      top: 150px; 
-      left: 200px;
-      animation: float 6s ease-in-out infinite; 
-      mix-blend-mode: screen; 
-    }
+/* The 3 initial shooting stars present in the HTML on page load */
+.s1 { top: 10%; left: 10%; animation: shoot 8s linear infinite 2s; }
+.s2 { top: 25%; left: 0%;  animation: shoot 13s linear infinite 6s; }
+.s3 { top: 15%; left: 50%; animation: shoot 10s linear infinite 1s; }
 
-  /* Easter Egg Secret Planet */
-  .easter-egg-planet 
-    {
-      width: 60px; 
-      height: 60px; 
-      top: 100px; 
-      right: 150px;
-      animation: float-rev 4s infinite; opacity: 0.3;
-    }
-  .easter-egg-planet:hover { opacity: 1; transform: scale(1.5); }
+@keyframes shoot {
+  0%   { transform: rotate(-45deg) translateX(0); opacity: 0; }
+  5%   { opacity: 1; }
+  10%  { transform: rotate(-45deg) translateX(1500px); opacity: 0; }
+  100% { opacity: 0; }
+}
 
-  /* Standard Planets (Un-intertwined!) */
-  .planet-small-1 
-    { 
-      width: 220px; 
-      height: 220px; 
-      top: 150px; 
-      left: 800px; 
-      animation: float-rev 7s infinite; 
-    }
-  .planet-small-2 
-    { 
-      width: 310px; 
-      height: 310px; 
-      top: 500px; 
-      left: 1200px; 
-      animation: float 5s infinite; 
-    }
-  .planet-small-3 
-    { 
-      width: 350px; 
-      height: 350px; 
-      top: 200px; 
-      left: -50px; 
-      animation: float-rev 8s infinite; 
-    }
-  .planet-small-4 
-    { 
-      width: 350px; 
-      height: 350px; 
-      top: 320px; 
-      left: 1010px; 
-      animation: float-rev 8s infinite; 
-    }
-  .planet-small-5 
-    { 
-      width: 350px; 
-      height: 350px; 
-      top: 400px; 
-      left: 600px; 
-      animation: float-rev 8s infinite; 
-      }
-  .planet-huge-left 
-    { 
-      width: 800px; 
-      height: 800px; 
-      left: -150px; 
-      top: 50px; 
-      animation: float-rev 10s infinite; 
-    }
-  .planet-huge-right 
-    { 
-      width: 400px; 
-      height: 400px; 
-      right: -100px; 
-      top: 100px; 
-      animation: 
-      float 12s infinite; 
-    }
-  .ground-hollow 
-    {
-      position: absolute;
-      bottom: -45vh;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 100vw;
-      height: 1260px;
-      border-radius: 0;
-    }
+#easter-egg-hint {
+  position: fixed;
+  top: 20px;
+  right: 30px;
+  color: rgba(255, 255, 255, 0.3);
+  font-size: 0.8rem;
+  z-index: 1000;
+  pointer-events: none;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
 
-  .img-placeholder 
-    {
-      width: 100%; 
-      height: 100%; 
-      border-radius: 50%; 
-      border: 2px dashed rgba(197, 168, 128, 0.4);
-      display: flex; 
-      align-items: center; 
-      justify-content: 
-      center; color: rgba(197, 168, 128, 0.6); 
-      font-size: 14px; 
-      text-transform: uppercase; 
-      letter-spacing: 2px;
-    }
 
-  .loop-panel 
-    {
-      position: absolute; 
-      background: rgba(11, 12, 16, 0.9); 
-      border: 1px solid var(--accent);
-      padding: 20px; 
-      border-radius: 8px; 
-      color: var(--accent); 
-      backdrop-filter: blur(8px);
-      width: 350px; 
-      z-index: 20; 
-      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-    }
+/* ==========================================
+   VIEWPORT / FLOOR SCROLLING SYSTEM
+   ========================================== */
 
-  .loop-panel h3 
-    { 
-      font-size: 1.2rem; 
-      margin-bottom: 10px; 
-      border-bottom: 1px dashed var(--accent); 
-      padding-bottom: 5px; 
-    }
-  .loop-panel pre 
-  {
-      background: rgba(0,0,0,0.5); 
-      padding: 10px; 
-      border-radius: 4px; 
-      font-size: 0.85rem; 
-      margin-bottom: 15px; color: #fff; }
-  
-  .loop-btn 
-  {
-      width: 100%; 
-      padding: 12px; 
-      background: transparent; 
-      border: 1px solid var(--accent); 
-      color: var(--accent); 
-      font-family: inherit; 
-      font-size: 1rem; 
-      text-transform: uppercase;
-      cursor: pointer; 
-      transition: all 0.3s ease;
-  }
-  .loop-btn:hover { background: rgba(197, 168, 128, 0.15); }
-  .loop-status { margin-top: 10px; font-size: 0.9rem; text-align: center; }
+/* The visible "window" onto the scene; hides everything outside it */
+#viewport {
+  height: 100vh;
+  height: 100dvh;
+  width: 100vw;
+  overflow: hidden;
+  position: relative;
+  z-index: 10;
+}
 
-  .loop-sprite {
-    position: absolute;
-    user-select: none;
-    width: 40px !important; 
-    height: 40px !important;
-    object-fit: contain;
-    animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  }
-  @keyframes popIn { 0% { transform: scale(0); } 100% { transform: scale(1); } }
-  .loop-status { margin-top: 15px; font-size: 14px; color: #a8b2d1; font-family: monospace; }
-  
-  .image-btn {
-    height: 70px; /* Adjust this to make your fox bigger/smaller */
-    width: auto; 
-    max-width: 250px
-    transition: transform 0.2s ease, filter 0.2s ease;
-  }
-  #fox-btn 
-  {
-    width: 260px;
-    height: 260px;
-    position: absolute;
-    bottom: 80px;
-    left: -250px;
-  }
-  #snake-btn
-  {
-    width: 200px;
-    height: 200px;
-    position: absolute;
-    bottom: 50px;
-    left: 90px;
-  }
-  /* Choices UI */
-  .choices-container {
-    position: absolute; bottom: 120px; left: 50%; transform: translateX(-50%);
-    display: flex; gap: 40px; z-index: 10; align-items: center;
-  }
-  .choices-container {
-    position: absolute; bottom: 120px; left: 50%; transform: translateX(-50%);
-    display: flex; gap: 40px; z-index: 10;
-  }
+/* Vertical strip holding all 4 floors; JS slides this via translateY
+   to "scroll" between floors */
+#floor-strip {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  transition: transform 1000ms cubic-bezier(0.65, 0, 0.35, 1);
+  will-change: transform;
+}
 
-  #custom-modal 
-  {
-    position: fixed; 
-    inset: 0; 
-    display: flex; 
-    align-items: center; 
-    justify-content: center;
-    background: rgba(4, 5, 5, 0.8); 
-    backdrop-filter: blur(5px); 
-    z-index: 1000; 
-    opacity: 0; 
-    pointer-events: none; 
-    transition: opacity 0.3s ease;
-  }
-  #custom-modal.visible 
-    { opacity: 1; pointer-events: auto; }
-  .modal-box 
-    {
-      background: #1f2833; 
-      border: 1px solid var(--accent); 
-      padding: 40px; border-radius: 8px; 
-      text-align: center; 
-      max-width: 500px; 
-      color: var(--text); 
-      box-shadow: 0 10px 40px #000;
-    }
-  .modal-box p 
-    { 
-      font-size: 1.2rem; 
-      margin-bottom: 30px; 
-      line-height: 1.6; 
-    }
+/* Each individual floor/section (one per screen height) */
+.floor {
+  height: 100vh;
+  height: 100dvh;
+  width: 100vw;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  background: transparent;
+}
 
-  .image-btn:hover 
-    {
-      transform: scale(1.1);
-      filter: brightness(1.2); /* Makes it glow slightly */
-      filter: drop-shadow(0 0 14px rgba(11, 9, 7, 0.6))
-    }
+/* Fixed-size "stage" that all planet/scene content is positioned within */
+.floor-placeholder-box {
+  width: var(--stage-width);
+  height: var(--stage-height);
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
 
-    .image-btn:active 
-    {
-      transform: scale(0.95);
-    }
+
+/* ==========================================
+   THE PRINCE (SITTING & TRAVELING LOGIC)
+   ========================================== */
+
+/* Base container for the traveling prince; his position/rotation/scale
+   per floor is set below via [data-active-floor] attribute selectors */
+#traveling-prince {
+  position: absolute;
+  z-index: 100;
+  /* Smooth transitions for position, rotation/scale, and fade-in/out */
+  transition:
+    top 1000ms cubic-bezier(0.65, 0, 0.35, 1),
+    left 1000ms cubic-bezier(0.65, 0, 0.35, 1),
+    transform 1000ms cubic-bezier(0.65, 0, 0.35, 1),
+    opacity 600ms ease;
+  width: 250px;
+  height: 250px;
+  pointer-events: none;
+  animation: float-prince 4s ease-in-out infinite; /* Gentle floating bob */
+}
+
+#traveling-prince img {
+  width: 250px;
+  height: 250px;
+  object-fit: contain;
+  filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.3));
+}
+
+@keyframes float-prince {
+  0%, 100% { transform: translateY(0px); }
+  50%      { transform: translateY(-15px); }
+}
+
+/* --- THE MAGIC COORDINATES ---
+   Each rule below targets the prince based on which floor is active
+   (via the body's [data-active-floor] attribute, set by script.js) */
+
+/* Floor 1: hidden on the planet, waiting for the user to click him */
+body[data-active-floor="0"]:not([data-prince-state="ready"]) #traveling-prince {
+  top: 35vh;
+  left: 25vw;
+  transform: rotate(0deg) scale(0.5);
+  opacity: 0;
+}
+
+/* Floor 1 (CLICKED): leaps to the middle of the screen, larger and visible */
+body[data-active-floor="0"][data-prince-state="ready"] #traveling-prince {
+  top: 40vh;
+  left: 40vw;
+  transform: translate(-50%, -50%) rotate(0deg) scale(2.0);
+  opacity: 1;
+}
+
+/* Independent image-size override for Floor 1's "ready" state only */
+body[data-active-floor="0"][data-prince-state="ready"] #traveling-prince img {
+  width: 350px;
+  height: 350px;
+}
+
+/* Keep him visible on all floors other than Floor 1's "hidden" state */
+body:not([data-active-floor="0"]) #traveling-prince {
+  opacity: 1;
+}
+
+/* Floor 2: falling, tilted to the left */
+body[data-active-floor="1"] #traveling-prince {
+  top: 40vh;
+  left: 30vw;
+  transform: rotate(-15deg) scale(0.95);
+}
+
+/* Floor 3: tumbling further, tilted the other way */
+body[data-active-floor="2"] #traveling-prince {
+  top: 55vh;
+  left: 60vw;
+  transform: rotate(65deg) scale(0.85);
+}
+
+/* Floor 4: landed on Earth — centered, upright, no floating bob (animation: none) */
+body[data-active-floor="3"] #traveling-prince {
+  top: 60vh;
+  left: 50vw;
+  transform: translate(-50%, -50%) rotate(0deg) scale(1.1);
+  animation: none;
+}
+
+
+/* ==========================================
+   PLANETS (SHARED STYLES)
+   ========================================== */
+
+/* Base styling for every planet: circular, positioned absolutely,
+   with a subtle hover "pulse" */
+.planet-container {
+  position: absolute;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+.planet-container:hover {
+  transform: scale(1.02);
+  box-shadow: 0 0 40px rgba(197, 168, 128, 0.2);
+}
+
+/* Planet artwork fills its container without distortion */
+.planet-container img {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  pointer-events: none;
+}
+
+/* Earth's ground image: crops to fill its box (see .ground-hollow below
+   for the box's actual dimensions), anchored to the bottom so any
+   cropping trims the sky first, not the grass */
+.ground-hollow img {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: bottom;
+  pointer-events: none;
+}
+
+/* Gentle floating animations used by various planets/props */
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50%      { transform: translateY(-20px); }
+}
+
+@keyframes float-rev {
+  0%, 100% { transform: translateY(0px); }
+  50%      { transform: translateY(15px); }
+}
+
+
+/* ==========================================
+   SITTING PRINCE (attached to B-612)
+   ========================================== */
+
+.sitting-prince {
+  position: absolute;
+  width: 100px;
+  height: 100px;
+  top: 40px;
+  left: 110px;
+  z-index: 10;
+  pointer-events: auto; /* Must remain clickable even though the parent planet is too */
+  cursor: pointer;
+  transition:
+    opacity 0.4s ease,
+    transform 0.3s ease;
+}
+
+.sitting-prince:hover {
+  transform: scale(1.1);
+  filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.4));
+}
+
+/* Hide the sitting prince once he's been activated ("ready"),
+   or whenever we're on any floor other than Floor 1 */
+body[data-prince-state="ready"] .sitting-prince,
+body:not([data-active-floor="0"]) .sitting-prince {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.sitting-prince img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+
+/* ==========================================
+   INDIVIDUAL PLANET POSITIONS & SIZES
+   ========================================== */
+
+/* B-612 — the prince's home planet (Floor 1) */
+.planet-home {
+  width: 290px;
+  height: 290px;
+  top: 150px;
+  left: 200px;
+  animation: float 6s ease-in-out infinite;
+}
+
+/* Hidden easter-egg planet (Floor 1) — triggers the meteor shower */
+.easter-egg-planet {
+  width: 60px;
+  height: 60px;
+  top: 100px;
+  right: 150px;
+  animation: float-rev 4s infinite;
+  opacity: 0.3;
+}
+
+.easter-egg-planet:hover {
+  opacity: 1;
+  transform: scale(1.5);
+}
+
+/* Standard planets used across Floors 1-3 */
+.planet-small-1 { width: 220px; height: 220px; top: 150px; left: 800px;  animation: float-rev 7s infinite; }
+.planet-small-2 { width: 310px; height: 310px; top: 500px; left: 1200px; animation: float 5s infinite; }
+.planet-small-3 { width: 350px; height: 350px; top: 200px; left: -50px; animation: float-rev 8s infinite; }
+.planet-small-4 { width: 350px; height: 350px; top: 320px; left: 1010px; animation: float-rev 8s infinite; }
+.planet-small-5 { width: 350px; height: 350px; top: 400px; left: 600px; animation: float-rev 8s infinite; }
+
+.planet-huge-left  { width: 800px; height: 800px; left: -150px; top: 50px;  animation: float-rev 10s infinite; }
+.planet-huge-right { width: 400px; height: 400px; right: -100px; top: 100px; animation: float 12s infinite; }
+
+/* The Earth's ground image container (Floor 4) — spans the full
+   browser width and is anchored to the bottom of its floor.
+   height/bottom are tuned to show the mountain + trees from earth.png
+   without cropping the visible crest. */
+.ground-hollow {
+  position: absolute;
+  bottom: -45vh;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100vw;
+  height: 1260px;
+  border-radius: 0;
+}
+
+
+/* ==========================================
+   PLACEHOLDER ART (used before real images were added)
+   ========================================== */
+
+.img-placeholder {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  border: 2px dashed rgba(197, 168, 128, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(197, 168, 128, 0.6);
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+
+/* ==========================================
+   LOOP EXHIBITION PANELS (FOR / DO-WHILE demos)
+   ========================================== */
+
+.loop-panel {
+  position: absolute;
+  background: rgba(11, 12, 16, 0.9);
+  border: 1px solid var(--accent);
+  padding: 20px;
+  border-radius: 8px;
+  color: var(--accent);
+  backdrop-filter: blur(8px);
+  width: 350px;
+  z-index: 20;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+.loop-panel h3 {
+  font-size: 1.2rem;
+  margin-bottom: 10px;
+  border-bottom: 1px dashed var(--accent);
+  padding-bottom: 5px;
+}
+
+.loop-panel pre {
+  background: rgba(0, 0, 0, 0.5);
+  padding: 10px;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  margin-bottom: 15px;
+  color: #fff;
+}
+
+.loop-btn {
+  width: 100%;
+  padding: 12px;
+  background: transparent;
+  border: 1px solid var(--accent);
+  color: var(--accent);
+  font-family: inherit;
+  font-size: 1rem;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.loop-btn:hover {
+  background: rgba(197, 168, 128, 0.15);
+}
+
+.loop-status {
+  margin-top: 15px;
+  font-size: 14px;
+  color: #a8b2d1;
+  font-family: monospace;
+}
+
+/* Sprites spawned dynamically by the loop demos (birds, roses).
+   width/height are !important so inline sizing set via JS transform
+   never accidentally overrides the intended sprite size. */
+.loop-sprite {
+  position: absolute;
+  user-select: none;
+  width: 40px !important;
+  height: 40px !important;
+  object-fit: contain;
+  animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes popIn {
+  0%   { transform: scale(0); }
+  100% { transform: scale(1); }
+}
+
+
+/* ==========================================
+   FOX / SNAKE CHOICE BUTTONS (Floor 4)
+   ========================================== */
+
+.image-btn {
+  height: 70px; /* Base size fallback; #fox-btn / #snake-btn override this below */
+  width: auto;
+  max-width: 250px;
+  cursor: pointer;
+  transition:
+    transform 0.2s ease,
+    filter 0.2s ease;
+}
+
+#fox-btn {
+  width: 260px;
+  height: 260px;
+  position: absolute;
+  bottom: 80px;
+  left: -250px;
+}
+
+#snake-btn {
+  width: 200px;
+  height: 200px;
+  position: absolute;
+  bottom: 50px;
+  left: 90px;
+}
+
+.image-btn:hover {
+  transform: scale(1.1);
+  filter: drop-shadow(0 0 14px rgba(11, 9, 7, 0.6));
+}
+
+.image-btn:active {
+  transform: scale(0.95);
+}
+
+/* Wrapper positioning the fox/snake buttons together */
+.choices-container {
+  position: absolute;
+  bottom: 120px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 40px;
+  z-index: 10;
+  align-items: center;
+}
+
+
+/* ==========================================
+   CUSTOM MESSAGE MODAL
+   ========================================== */
+
+#custom-modal {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(4, 5, 5, 0.8);
+  backdrop-filter: blur(5px);
+  z-index: 1000;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+/* Toggled via JS (showModal / closeModal) to fade the modal in/out */
+#custom-modal.visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.modal-box {
+  background: #1f2833;
+  border: 1px solid var(--accent);
+  padding: 40px;
+  border-radius: 8px;
+  text-align: center;
+  max-width: 500px;
+  color: var(--text);
+  box-shadow: 0 10px 40px #000;
+}
+
+.modal-box p {
+  font-size: 1.2rem;
+  margin-bottom: 30px;
+  line-height: 1.6;
+}

@@ -1,137 +1,184 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>The Little Prince</title>
-
-<link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Little Prince</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body data-active-floor="0">
+  <!-- Small hint text in the corner for the meteor shower easter egg -->
+  <div id="hint">[ Press 'E' for Meteor Shower ]</div>
 
-<div id="hint">[ Press 'E' for Meteor Shower ]</div>
+  <!-- ==========================================
+       BACKGROUND LAYERS (starfield + twinkle effects)
+       ========================================== -->
+  <div id="star-container"></div>
+  <div class="twinkle-layer twinkle-1"></div>
+  <div class="twinkle-layer twinkle-2"></div>
 
-<!-- Background Layers -->
-<div id="star-container"></div>
-<div class="twinkle-layer twinkle-1"></div>
-<div class="twinkle-layer twinkle-2"></div>
+  <!-- Initial shooting stars, present on page load -->
+  <div class="shooting-star s1"></div>
+  <div class="shooting-star s2"></div>
+  <div class="shooting-star s3"></div>
 
-<!-- Initial Shooting stars -->
-<div class="shooting-star s1"></div>
-<div class="shooting-star s2"></div>
-<div class="shooting-star s3"></div>
-
-<!-- Custom Message Modal -->
-<div id="custom-modal">
-  <div class="modal-box">
-    <p id="modal-text">Message goes here.</p>
-    <button class="loop-btn" onclick="closeModal()">Close</button>
-  </div>
-</div>
-
-<div id="viewport">
-  
-  <!-- THE TRAVELING PRINCE (Moves independently across screen) -->
-  <div id="traveling-prince">
-    <img src="" alt="Traveling Prince" id="prince-img">
+  <!-- ==========================================
+       CUSTOM MESSAGE MODAL
+       Shown/hidden via showModal() / closeModal() in script.js
+       ========================================== -->
+  <div id="custom-modal">
+    <div class="modal-box">
+      <p id="modal-text">Message goes here.</p>
+      <button class="loop-btn" onclick="closeModal()">Close</button>
+    </div>
   </div>
 
-  <div id="floor-strip">
-    <!-- FLOOR 1: HOME PLANET -->
-    <section class="floor" data-floor="1">
-      <div class="floor-placeholder-box">
-        
-        <div class="planet-container planet-home" id="home-planet" onclick="showModal('Asteroid B-612. It is barely larger than a house.')">
-          <img src="assts/b612.png" alt="Home">
-          <!-- THE SITTING PRINCE (Attached to the planet) -->
-          <div class="sitting-prince" onclick="togglePrincePosture(event)" title="Click to stand up!">
-             <img src="" id="sitting-img" alt="Sitting Prince">
+  <div id="viewport">
+
+    <!-- THE TRAVELING PRINCE
+         Moves independently across the screen; his position/pose
+         per floor is controlled by CSS via [data-active-floor],
+         and his image source is swapped by script.js -->
+    <div id="traveling-prince">
+      <img src="" alt="Traveling Prince" id="prince-img">
+    </div>
+
+    <!-- Vertical strip containing all 4 floors; slid up/down by script.js -->
+    <div id="floor-strip">
+
+      <!-- ==========================================
+           FLOOR 1: HOME PLANET (B-612)
+           ========================================== -->
+      <section class="floor" data-floor="1">
+        <div class="floor-placeholder-box">
+
+          <!-- Home planet — click anywhere on it to show its modal message -->
+          <div class="planet-container planet-home" id="home-planet"
+               onclick="showModal('Asteroid B-612. It is barely larger than a house.')">
+            <img src="assts/b612.png" alt="Home">
+
+            <!-- THE SITTING PRINCE (attached to the planet)
+                 Clicking him stands him up and kicks off his journey -->
+            <div class="sitting-prince" onclick="togglePrincePosture(event)" title="Click to stand up!">
+              <img src="" id="sitting-img" alt="Sitting Prince">
+            </div>
           </div>
-        </div>
-        <div class="planet-container planet-small-2" onclick="showModal('Neighbors planet, hes too lazy that\'s why the baobab has taken over.')">
-           <img src="assts/Baobab.jpg" alt="neighbor">
-        </div>
 
-        <!-- SECRET EASTER EGG PLANET -->
-        <div class="planet-container easter-egg-planet" onclick="triggerMeteorShower(); showModal('Kalbo Kalbo Kalbo!!');">
-          <img src="assts/wali.png" alt="jkplanet">
-        </div>
-        
-        <div class="loop-panel" style="top: 200px; right: 200px;">
-          <h3>FOR Loop Exhibition</h3>
-          
-            for (let i = 0; i < 15; i++) {
+          <!-- Neighboring planet with the overgrown baobab -->
+          <div class="planet-container planet-small-2"
+               onclick="showModal('Neighbors planet, hes too lazy that\'s why the baobab has taken over.')">
+            <img src="assts/Baobab.jpg" alt="neighbor">
+          </div>
+
+          <!-- SECRET EASTER EGG PLANET
+               Triggers the meteor shower AND shows a modal message -->
+          <div class="planet-container easter-egg-planet"
+               onclick="triggerMeteorShower(); showModal('Kalbo Kalbo Kalbo!!');">
+            <img src="assts/wali.png" alt="jkplanet">
+          </div>
+
+          <!-- FOR LOOP interactive demo panel -->
+          <div class="loop-panel" style="top: 200px; right: 200px;">
+            <h3>FOR Loop Exhibition</h3>
+            <pre><code>for (let i = 0; i < 15; i++) {
   spawnBird();
-}
-          <button class="loop-btn" onclick="runForLoop()">Run Loop</button>
-          <div class="loop-status" id="for-status">Birds spawned: 0</div>
-        </div>
-      </div>
-    </section>
+}</code></pre>
+            <button class="loop-btn" onclick="runForLoop()">Run Loop</button>
+            <div class="loop-status" id="for-status">Birds spawned: 0</div>
+          </div>
 
-    <!-- FLOOR 2: FIRST GIANT PLANET -->
-    <section class="floor" data-floor="2">
-      <div class="floor-placeholder-box">
-        <div class="planet-container planet-huge-left" onclick="showModal('What a lonely man. He sits on a grand throne with no one to rule but a sleepy old rat. He thinks he commands the sun to set, but he only waits for the sun to do what it always does.')">
-          <img src="assts/king.png" alt="king">
         </div>
-        <div class="planet-container planet-small-4" onclick="showModal('This is so terribly sad. He drinks to forget that he is ashamed, and he is ashamed because he drinks.')">
-           <img src="assts/tippler.png" alt="tippler">
-        </div>
-        <div class="planet-container planet-small-1" onclick="showModal('Why does he want me to clap for him? He is the only person on this tiny planet, so of course he is the handsomest, richest, and smartest person here.')">
-          <img src="assts/conceitedman.png" alt=" conciet">
-        </div>
-      </div>
-    </section>
+      </section>
 
-    <!-- FLOOR 3: SECOND GIANT PLANET -->
-    <section class="floor" data-floor="3">
-  <div class="floor-placeholder-box">
-    <div class="planet-container planet-small-3 businessman-planet"
-      onclick="showModal('He counts millions of stars but never looks at their beauty. He thinks owning them makes him rich, but he cannot put a star in his pocket or use it to stay warm.')">
-      <img src="assts/Accountant.png" alt="Accountant">
-    </div>
-    <div class="planet-container planet-huge-right geographer-planet"
-      onclick="showModal('He sits at a massive desk and writes about mountains and oceans, but he has never walked outside to see them.')">
-      <img src="assts/geographer.png" alt="geographer">
-    </div>
-    <div class="planet-container planet-small-5 lamplighter-planet"
-      onclick="showModal('His planet turns so fast that he never gets to rest, yet he keeps doing his job. He is the only one who does not seem ridiculous to me.')">
-      <img src="assts/lamplighter.png" alt="lamplighter">
-    </div>
-  </div>
-</section>
+      <!-- ==========================================
+           FLOOR 2: FIRST GIANT PLANET
+           (King, Tippler, Conceited Man)
+           ========================================== -->
+      <section class="floor" data-floor="2">
+        <div class="floor-placeholder-box">
 
-    <!-- FLOOR 4: THE EARTH -->
-    <section class="floor" data-floor="4">
-      <div class="floor-placeholder-box">
-        <div class="ground-hollow" id="ground-hollow">
-         <img src="assts/earth.png" alt="Earth">
+          <div class="planet-container planet-huge-left"
+               onclick="showModal('What a lonely man. He sits on a grand throne with no one to rule but a sleepy old rat. He thinks he commands the sun to set, but he only waits for the sun to do what it always does.')">
+            <img src="assts/king.png" alt="king">
+          </div>
+
+          <div class="planet-container planet-small-4"
+               onclick="showModal('This is so terribly sad. He drinks to forget that he is ashamed, and he is ashamed because he drinks.')">
+            <img src="assts/tippler.png" alt="tippler">
+          </div>
+
+          <div class="planet-container planet-small-1"
+               onclick="showModal('Why does he want me to clap for him? He is the only person on this tiny planet, so of course he is the handsomest, richest, and smartest person here.')">
+            <img src="assts/conceitedman.png" alt="conceited man">
+          </div>
+
         </div>
+      </section>
 
-        <div class="loop-panel" style="bottom: 300px; left: 150px;">
-          <h3>DO-WHILE Loop Exhibition</h3>
-          
-          do {
-              spawnRose();
-                count++;      
-            } 
-            while (count < 40);
-          
-          <button class="loop-btn" onclick="runDoWhileLoop()">Run Loop</button>
-          <div class="loop-status" id="dowhile-status">Roses planted: 0</div>
+      <!-- ==========================================
+           FLOOR 3: SECOND GIANT PLANET
+           (Businessman, Geographer, Lamplighter)
+           ========================================== -->
+      <section class="floor" data-floor="3">
+        <div class="floor-placeholder-box">
+
+          <div class="planet-container planet-small-3 businessman-planet"
+               onclick="showModal('He counts millions of stars but never looks at their beauty. He thinks owning them makes him rich, but he cannot put a star in his pocket or use it to stay warm.')">
+            <img src="assts/Accountant.png" alt="Accountant">
+          </div>
+
+          <div class="planet-container planet-huge-right geographer-planet"
+               onclick="showModal('He sits at a massive desk and writes about mountains and oceans, but he has never walked outside to see them.')">
+            <img src="assts/geographer.png" alt="geographer">
+          </div>
+
+          <div class="planet-container planet-small-5 lamplighter-planet"
+               onclick="showModal('His planet turns so fast that he never gets to rest, yet he keeps doing his job. He is the only one who does not seem ridiculous to me.')">
+            <img src="assts/lamplighter.png" alt="lamplighter">
+          </div>
+
         </div>
+      </section>
 
-        <div class="choices-container">
-          <img id="fox-btn" src="assts/fox.png" class="image-btn" onclick="chooseFox()" alt="Fox: Stay (Add Roses)">
-          <img id="snake-btn" src="assts/snake.png" class="image-btn" onclick="chooseSnake()" alt="Snake: Fly Back Home">
-</div>
+      <!-- ==========================================
+           FLOOR 4: THE EARTH
+           (Fox, Snake, DO-WHILE loop demo)
+           ========================================== -->
+      <section class="floor" data-floor="4">
+        <div class="floor-placeholder-box">
+
+          <!-- Earth ground image; roses are dynamically appended here by script.js -->
+          <div class="ground-hollow" id="ground-hollow">
+            <img src="assts/earth.png" alt="Earth">
+          </div>
+
+          <!-- DO-WHILE LOOP interactive demo panel -->
+          <div class="loop-panel" style="bottom: 300px; left: 150px;">
+            <h3>DO-WHILE Loop Exhibition</h3>
+            <pre><code>do {
+  spawnRose();
+  count++;
+} while (count < 40);</code></pre>
+            <button class="loop-btn" onclick="runDoWhileLoop()">Run Loop</button>
+            <div class="loop-status" id="dowhile-status">Roses planted: 0</div>
+          </div>
+
+          <!-- FOX / SNAKE CHOICE BUTTONS
+               Fox: starts an infinite rose-planting loop (toggle on/off)
+               Snake: stops the loop and flies the prince back to Floor 1 -->
+          <div class="choices-container">
+            <img id="fox-btn" src="assts/fox.png" class="image-btn"
+                 onclick="chooseFox()" alt="Fox: Stay (Add Roses)">
+            <img id="snake-btn" src="assts/snake.png" class="image-btn"
+                 onclick="chooseSnake()" alt="Snake: Fly Back Home">
+          </div>
+
         </div>
-      </div>
-    </section>
-  </div>
-</div>
+      </section>
 
-<script src="script.js"></script>
+    </div> <!-- #floor-strip -->
+  </div> <!-- #viewport -->
+
+  <script src="script.js"></script>
 </body>
 </html>
