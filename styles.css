@@ -182,8 +182,8 @@
   body[data-active-floor="2"] #traveling-prince { top: 55vh; left: 60vw; 
     transform: rotate(65deg) scale(0.85); }
   /* Floor 4 */
-  body[data-active-floor="3"] #traveling-prince { top: 45vh; left: 50vw; 
-    transform: rotate(0deg) scale(1.1); margin-left: -60px; animation: none; }
+  body[data-active-floor="3"] #traveling-prince { top: 60vh; left: 50vw; 
+    transform: translate(-50%, -50%) rotate(0deg) scale(1.1); animation: none; }
 
 
   .planet-container 
@@ -203,13 +203,22 @@
       box-shadow: 0 0 40px rgba(197, 168, 128, 0.2);
     }
 
-  .planet-container img, .ground-hollow img 
+  .planet-container img
     {
       position: absolute; 
       width: 100%; 
       height: 100%;
       object-fit: contain; 
       pointer-events: none; 
+    }
+    .ground-hollow img 
+    {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: bottom;
+      pointer-events: none;
     }
 
   @keyframes float 
@@ -240,13 +249,12 @@
       position: absolute; 
       width: 100px; 
       height: 100px;    
-      top: -30px;   
-      left: 85px; 
+      top: 40px;   
+      left: 110px; 
       z-index: 10; 
       pointer-events: auto;
       cursor: pointer; 
-      transition: opacity 0.4s ease, 
-      transform 0.3s ease;
+      transition: opacity 0.4s ease, transform 0.3s ease;
     } 
   
   .sitting-prince:hover 
@@ -265,14 +273,19 @@
       pointer-events: none;
   }
 
-  .sitting-prince img { width: 100%; height: 100%; object-fit: contain; }
+  .sitting-prince img 
+    { 
+      width: 100%; 
+      height: 100%; 
+      object-fit: contain; 
+    }
 
   /* B-612 */
   .planet-home 
     {
-      width: 250px; 
-      height: 250px; 
-      top: 250px; 
+      width: 290px; 
+      height: 290px; 
+      top: 150px; 
       left: 200px;
       animation: float 6s ease-in-out infinite; 
       mix-blend-mode: screen; 
@@ -349,13 +362,13 @@
     }
   .ground-hollow 
     {
-      position: absolute; 
-      bottom: -600px; 
-      left: 50%; 
+      position: absolute;
+      bottom: -45vh;
+      left: 50%;
       transform: translateX(-50%);
-      width: 2000px; 
-      height: 1000px; 
-      border-radius: 50%;
+      width: 100vw;
+      height: 1260px;
+      border-radius: 0;
     }
 
   .img-placeholder 
@@ -433,7 +446,6 @@
     height: 70px; /* Adjust this to make your fox bigger/smaller */
     width: auto; 
     max-width: 250px
-    cursor: pointer
     transition: transform 0.2s ease, filter 0.2s ease;
   }
   #fox-btn 
@@ -442,7 +454,7 @@
     height: 260px;
     position: absolute;
     bottom: 80px;
-    left: -170px;
+    left: -250px;
   }
   #snake-btn
   {

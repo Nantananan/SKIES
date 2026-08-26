@@ -2,7 +2,7 @@
   // CUSTOM ASSET CONFIGURATION (ARRAY SUPPORTED)
   // ==========================================
   const ASSETS = {
-    bird: 'https://placehold.co/50x50/transparent/white?text=Bird',
+    bird: 'assts/bird.png',
     rose: 'assts/redrose.png',
     sittingPrince: 'assts/littleprincesitting.png',
     
@@ -149,19 +149,21 @@
     document.querySelectorAll('.cloned-rose').forEach(el => el.remove());
     statusText.innerText = "Planting...";
 
-    do {
+    do 
+    {
       const currentCount = roseCount;
       setTimeout(() => {
         const rose = document.createElement('img');
         rose.src = ASSETS.rose;
         rose.className = 'loop-sprite cloned-rose';
-        rose.style.left = `${20 + (Math.random() * 60)}%`;
-        rose.style.top = `${2 + (Math.random() * 10)}%`;
+        rose.style.left = `${8 + (Math.random() * 84)}%`;
+        rose.style.top = `${35 + (Math.random() * 35)}%`;
         hollowGround.appendChild(rose);
         statusText.innerText = `Roses planted: ${currentCount + 1} / ${totalRoses}`;
       }, currentCount * 50);
       roseCount++;
-    } while (roseCount < totalRoses);
+    } 
+      while (roseCount < totalRoses);
   }
 
  // --- Choices Buttons ---
@@ -177,15 +179,15 @@
       // We removed the code that changes the button text, because it's an image now!
       return; 
     } 
-    
     // Start an infinite loop that runs every 150 milliseconds
     foxInterval = setInterval(() => {
       const rose = document.createElement('img');
       rose.src = ASSETS.rose; // Uses your custom rose!
       rose.className = 'loop-sprite cloned-rose'; 
       
-      const horizontalPos = 20 + (Math.random() * 60); 
-      const verticalPos = 1 + (Math.random() * 15); 
+     // chooseFox()
+      const horizontalPos = 8 + (Math.random() * 84);
+      const verticalPos = 35 + (Math.random() * 35);
       
       rose.style.position = 'absolute';
       rose.style.left = `${horizontalPos}%`;

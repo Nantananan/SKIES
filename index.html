@@ -42,7 +42,7 @@
       <div class="floor-placeholder-box">
         
         <div class="planet-container planet-home" id="home-planet" onclick="showModal('Asteroid B-612. It is barely larger than a house.')">
-          <div class="img-placeholder">B-612 Art</div>
+          <img src="assts/b612.png" alt="Home">
           <!-- THE SITTING PRINCE (Attached to the planet) -->
           <div class="sitting-prince" onclick="togglePrincePosture(event)" title="Click to stand up!">
              <img src="" id="sitting-img" alt="Sitting Prince">
@@ -59,9 +59,10 @@
         
         <div class="loop-panel" style="top: 200px; right: 200px;">
           <h3>FOR Loop Exhibition</h3>
-          <pre><code>for (let i = 0; i < 15; i++) {
+          
+            for (let i = 0; i < 15; i++) {
   spawnBird();
-}</code></pre>
+}
           <button class="loop-btn" onclick="runForLoop()">Run Loop</button>
           <div class="loop-status" id="for-status">Birds spawned: 0</div>
         </div>
@@ -88,15 +89,15 @@
   <div class="floor-placeholder-box">
     <div class="planet-container planet-small-3 businessman-planet"
       onclick="showModal('He counts millions of stars but never looks at their beauty. He thinks owning them makes him rich, but he cannot put a star in his pocket or use it to stay warm.')">
-      <div class="img-placeholder">Small 3</div>
+      <img src="assts/Accountant.png" alt="Accountant">
     </div>
     <div class="planet-container planet-huge-right geographer-planet"
       onclick="showModal('He sits at a massive desk and writes about mountains and oceans, but he has never walked outside to see them.')">
-      <div class="img-placeholder">Huge Planet 2</div>
+      <img src="assts/geographer.png" alt="geographer">
     </div>
     <div class="planet-container planet-small-5 lamplighter-planet"
       onclick="showModal('His planet turns so fast that he never gets to rest, yet he keeps doing his job. He is the only one who does not seem ridiculous to me.')">
-      <div class="img-placeholder">Small 5</div>
+      <img src="assts/lamplighter.png" alt="lamplighter">
     </div>
   </div>
 </section>
@@ -105,15 +106,18 @@
     <section class="floor" data-floor="4">
       <div class="floor-placeholder-box">
         <div class="ground-hollow" id="ground-hollow">
-          <div class="img-placeholder">Earth Hollow Art</div>
+         <img src="assts/earth.png" alt="Earth">
         </div>
 
         <div class="loop-panel" style="bottom: 300px; left: 150px;">
           <h3>DO-WHILE Loop Exhibition</h3>
-          <pre><code>do {
-  spawnRose();
-  count++;
-} while (count < 40);</code></pre>
+          
+          do {
+              spawnRose();
+                count++;      
+            } 
+            while (count < 40);
+          
           <button class="loop-btn" onclick="runDoWhileLoop()">Run Loop</button>
           <div class="loop-status" id="dowhile-status">Roses planted: 0</div>
         </div>
